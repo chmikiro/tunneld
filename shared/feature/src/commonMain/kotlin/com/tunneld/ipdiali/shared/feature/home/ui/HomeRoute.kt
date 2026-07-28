@@ -1,0 +1,46 @@
+package com.tunneld.ipdiali.shared.feature.home.ui
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.tunneld.ipdiali.shared.feature.home.persentation.HomeViewModel
+import kotlinx.coroutines.launch
+import org.koin.compose.viewmodel.koinViewModel
+
+@Composable
+fun HomeRoute(
+    onSettings: () -> Unit,
+    onExportCsv: (csvContent: String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val viewModel: HomeViewModel = koinViewModel()
+    val scope = rememberCoroutineScope()
+
+    val isRefreshing by viewModel.isRefreshing.collectAsStateWithLifecycle()
+    val pages = viewModel.history.collectAsLazyPagingItems()
+    val ip4 by viewModel.ipv4.collectAsStateWithLifecycle()
+    val ip6 by viewModel.ipv6.collectAsStateWithLifecycle()
+    val filter by viewModel.filter.collectAsStateWithLifecycle()
+
+    HomeScreen(
+        ip4 = ip4,
+        ip6 = ip6,
+        history = pages,
+        filter = filter,
+        isRefreshing = isRefreshing,
+        onRefresh = viewModel::refresh,
+        onSearch = viewModel::search,
+        onSettings = onSettings,
+        onFilterUpdate = viewModel::updateFilter,
+        onExportCsv = {
+            scope.launch {
+                val csv = viewModel.exportToCsv()
+                onExportCsv(csv)
+            }
+        },
+        modifier = modifier,
+    )
+}
