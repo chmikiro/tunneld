@@ -103,8 +103,8 @@ android {
         applicationId = "com.tunneld.ipdiali"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 22
-        versionName = "5.0.0-alpha.7"
+        versionCode = 1
+        versionName = "0.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
