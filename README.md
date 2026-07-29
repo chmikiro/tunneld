@@ -4,6 +4,8 @@ Android app that logs your IP address changes, tests for DNS leaks, and exports 
 
 Inspired by [Find My IP](https://github.com/maksimowiczm/find-my-ip) by Mateusz Maksimowicz.
 
+<img width="3808" height="3808" alt="Cleaned_2026_9312_Privacy" src="https://github.com/user-attachments/assets/52612837-dda5-42bc-bc4d-a13024eaa55c" />
+
 
 ## What it does
 
