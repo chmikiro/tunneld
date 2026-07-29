@@ -12,6 +12,7 @@ fun SettingsScreenPreview() {
             onBack = {},
             onRunInBackground = {},
             onNotifications = {},
+            onImportCsv = {},
         )
     }
 }

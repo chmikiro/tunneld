@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.Engineering
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.TravelExplore
@@ -34,6 +35,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +43,11 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.tunneld.ipdiali.shared.core.feature.ui.ArrowBackIconButton
+import com.tunneld.ipdiali.shared.core.feature.ui.ThemeState
+import com.tunneld.ipdiali.shared.core.domain.ThemeMode
+import com.tunneld.ipdiali.shared.core.application.usecase.ClearHistoryUseCase
+import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 import tunneld.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -51,10 +58,15 @@ internal fun SettingsScreen(
     onBack: () -> Unit,
     onRunInBackground: () -> Unit,
     onNotifications: () -> Unit,
+    onImportCsv: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     var showDataSourceDialog by remember { mutableStateOf(false) }
+    var showClearDialog by remember { mutableStateOf(false) }
+    var showThemeDialog by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val clearHistoryUseCase: ClearHistoryUseCase = koinInject()
 
     Scaffold(
         modifier = modifier,
@@ -100,6 +112,41 @@ internal fun SettingsScreen(
                     supportingContent = { Text("Choose geolocation provider") },
                 )
             }
+            item {
+                ListItem(
+                    headlineContent = { Text("Import CSV") },
+                    modifier = Modifier.heightIn(min = 68.dp).clickable { onImportCsv() },
+                    leadingContent = {
+                        Icon(
+                            Icons.Outlined.DeleteForever,
+                            contentDescription = null,
+                        )
+                    },
+                    supportingContent = { Text("Import previously exported history") },
+                )
+            }
+            item {
+                ListItem(
+                    headlineContent = { Text("Theme") },
+                    modifier = Modifier.heightIn(min = 68.dp).clickable { showThemeDialog = true },
+                    leadingContent = { Icon(Icons.Outlined.Notifications, null) },
+                    supportingContent = { Text("System / Dark / Light") },
+                )
+            }
+            item {
+                ListItem(
+                    headlineContent = { Text("Clear History") },
+                    modifier = Modifier.heightIn(min = 68.dp).clickable { showClearDialog = true },
+                    leadingContent = {
+                        Icon(
+                            Icons.Outlined.DeleteForever,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.error,
+                        )
+                    },
+                    supportingContent = { Text("Delete all stored IP addresses") },
+                )
+            }
 
             // Credits section
             item {
@@ -115,7 +162,7 @@ internal fun SettingsScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Text(
-                        "v0.1",
+                        "v0.2.0",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                     )
@@ -139,6 +186,80 @@ internal fun SettingsScreen(
     if (showDataSourceDialog) {
         GeoIpDataSourceDialog(
             onDismiss = { showDataSourceDialog = false },
+        )
+    }
+
+    if (showClearDialog) {
+        AlertDialog(
+            onDismissRequest = { showClearDialog = false },
+            title = { Text("Clear all history?") },
+            text = { Text("This permanently deletes all stored IP addresses. This action cannot be undone.") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        scope.launch {
+                            clearHistoryUseCase.clear()
+                            showClearDialog = false
+                        }
+                    },
+                ) {
+                    Text("Delete All", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showClearDialog = false }) {
+                    Text("Cancel")
+                }
+            },
+        )
+    }
+
+    if (showThemeDialog) {
+        val currentTheme = ThemeState.themeMode
+        AlertDialog(
+            onDismissRequest = { showThemeDialog = false },
+            title = { Text("Theme") },
+            text = {
+                Column(modifier = Modifier.selectableGroup()) {
+                    ThemeMode.entries.forEach { mode ->
+                        ListItem(
+                            headlineContent = {
+                                Text(
+                                    when (mode) {
+                                        ThemeMode.System -> "System default"
+                                        ThemeMode.Dark -> "Dark"
+                                        ThemeMode.Light -> "Light"
+                                    }
+                                )
+                            },
+                            leadingContent = {
+                                RadioButton(
+                                    selected = currentTheme == mode,
+                                    onClick = {
+                                        ThemeState.themeMode = mode
+                                        showThemeDialog = false
+                                    },
+                                )
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .selectable(
+                                    selected = currentTheme == mode,
+                                    onClick = {
+                                        ThemeState.themeMode = mode
+                                        showThemeDialog = false
+                                    },
+                                    role = Role.RadioButton,
+                                ),
+                        )
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showThemeDialog = false }) {
+                    Text("Close")
+                }
+            },
         )
     }
 }

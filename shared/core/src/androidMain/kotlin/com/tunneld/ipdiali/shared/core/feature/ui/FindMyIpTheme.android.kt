@@ -11,17 +11,27 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import com.tunneld.ipdiali.shared.core.domain.ThemeMode
 
 @Composable
-actual fun FindMyIpTheme(content: @Composable (() -> Unit)) {
-    FindMyIpTheme(dynamicColor = true, content = content)
+actual fun FindMyIpTheme(
+    themeMode: ThemeMode,
+    content: @Composable (() -> Unit),
+) {
+    val darkTheme = when (themeMode) {
+        ThemeMode.Dark -> true
+        ThemeMode.Light -> false
+        ThemeMode.System -> isSystemInDarkTheme()
+    }
+
+    FindMyIpThemeImpl(darkTheme = darkTheme, dynamicColor = true, content = content)
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-private fun FindMyIpTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+private fun FindMyIpThemeImpl(
+    darkTheme: Boolean,
+    dynamicColor: Boolean,
     content: @Composable (() -> Unit),
 ) {
     val colorScheme =
@@ -30,27 +40,17 @@ private fun FindMyIpTheme(
                 val context = LocalContext.current
                 if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
             }
-
-            darkTheme -> DefaultTheme.DarkColorScheme
-            else -> DefaultTheme.LightColorScheme
+            darkTheme -> darkColorScheme(
+                primary = Color(0xFFD0BCFF),
+                secondary = Color(0xFFCCC2DC),
+                tertiary = Color(0xFFEFB8C8),
+            )
+            else -> lightColorScheme(
+                primary = Color(0xFF6650a4),
+                secondary = Color(0xFF625b71),
+                tertiary = Color(0xFF7D5260),
+            )
         }
 
     MaterialExpressiveTheme(colorScheme = colorScheme, content = content)
-}
-
-private object DefaultTheme {
-
-    private val Purple80 = Color(0xFFD0BCFF)
-    private val PurpleGrey80 = Color(0xFFCCC2DC)
-    private val Pink80 = Color(0xFFEFB8C8)
-
-    private val Purple40 = Color(0xFF6650a4)
-    private val PurpleGrey40 = Color(0xFF625b71)
-    private val Pink40 = Color(0xFF7D5260)
-
-    val DarkColorScheme =
-        darkColorScheme(primary = Purple80, secondary = PurpleGrey80, tertiary = Pink80)
-
-    val LightColorScheme =
-        lightColorScheme(primary = Purple40, secondary = PurpleGrey40, tertiary = Pink40)
 }

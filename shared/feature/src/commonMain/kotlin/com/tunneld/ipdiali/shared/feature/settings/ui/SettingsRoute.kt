@@ -8,12 +8,14 @@ fun SettingsRoute(
     onBack: () -> Unit,
     onRunInBackground: () -> Unit,
     onNotifications: () -> Unit,
+    onImportCsv: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     SettingsScreen(
         onBack = onBack,
         onRunInBackground = onRunInBackground,
         onNotifications = onNotifications,
+        onImportCsv = onImportCsv,
         modifier = modifier,
     )
 }

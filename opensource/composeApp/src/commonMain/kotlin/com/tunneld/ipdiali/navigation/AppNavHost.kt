@@ -12,6 +12,7 @@ import com.tunneld.ipdiali.shared.feature.settings.ui.SettingsRoute
 @Composable
 internal fun AppNavHost(
     onExportCsv: (csvContent: String) -> Unit,
+    onImportCsv: () -> Unit,
     modifier: Modifier = Modifier.Companion,
 ) {
     val navController = rememberNavController()
@@ -38,6 +39,7 @@ internal fun AppNavHost(
                 onNotifications = {
                     navController.navigate(Route.Notifications.name) { launchSingleTop = true }
                 },
+                onImportCsv = onImportCsv,
                 modifier = Modifier,
             )
         }

@@ -77,6 +77,105 @@ class RoomAddressHistoryDataSource(
             )
             .map { it.toModel() }
 
+    override suspend fun clearAll() = dao.clearAll()
+
+    override suspend fun importCsv(csvContent: String) {
+        val lines = csvContent.lines().filter { it.isNotBlank() }
+        if (lines.isEmpty()) return
+        // Skip header
+        val dataLines = if (lines.first().startsWith("address,")) lines.drop(1) else lines
+        val entities = dataLines.mapNotNull { line ->
+            parseCsvLine(line)?.toEntity()
+        }
+        if (entities.isNotEmpty()) {
+            dao.insertAll(entities)
+        }
+    }
+
+    private fun parseCsvLine(line: String): CsvRow? {
+        val fields = mutableListOf<String>()
+        var current = StringBuilder()
+        var inQuotes = false
+        for (char in line) {
+            when {
+                char == '"' && !inQuotes -> inQuotes = true
+                char == '"' && inQuotes -> inQuotes = false
+                char == ',' && !inQuotes -> { fields.add(current.toString().trim('"')); current = StringBuilder() }
+                else -> current.append(char)
+            }
+        }
+        fields.add(current.toString().trim('"'))
+        if (fields.size < 12) return null
+        return CsvRow(
+            address = fields[0],
+            version = fields[1],
+            networkType = fields[2],
+            country = fields[3].ifBlank { null },
+            countryCode = fields[4].ifBlank { null },
+            city = fields[5].ifBlank { null },
+            isp = fields[6].ifBlank { null },
+            org = fields[7].ifBlank { null },
+            timezone = fields[8].ifBlank { null },
+            latitude = fields[9].toDoubleOrNull(),
+            longitude = fields[10].toDoubleOrNull(),
+            timestamp = fields[11],
+        )
+    }
+
+    private data class CsvRow(
+        val address: String,
+        val version: String,
+        val networkType: String,
+        val country: String?,
+        val countryCode: String?,
+        val city: String?,
+        val isp: String?,
+        val org: String?,
+        val timezone: String?,
+        val latitude: Double?,
+        val longitude: Double?,
+        val timestamp: String,
+    )
+
+    @OptIn(ExperimentalTime::class)
+    private fun CsvRow.toEntity(): AddressHistoryEntity? {
+        val addrVersion = when {
+            version.contains("4") -> AddressVersion.IPV4
+            version.contains("6") -> AddressVersion.IPV6
+            else -> return null
+        }
+        val nt = when (networkType.lowercase()) {
+            "wifi" -> NetworkType.WIFI
+            "cellular" -> NetworkType.CELLULAR
+            "vpn" -> NetworkType.VPN
+            "unknown" -> NetworkType.UNKNOWN
+            else -> NetworkType.UNKNOWN
+        }
+        val epochSeconds = try {
+            kotlinx.datetime.LocalDateTime.parse(timestamp)
+                .toInstant(kotlinx.datetime.TimeZone.currentSystemDefault())
+                .epochSeconds
+        } catch (e: Exception) {
+            0L
+        }
+        return AddressHistoryEntity(
+            id = 0,
+            address = address,
+            domain = null,
+            addressVersion = addrVersion,
+            networkType = nt,
+            epochSeconds = epochSeconds,
+            country = country,
+            countryCode = countryCode,
+            city = city,
+            isp = isp,
+            org = org,
+            timezone = timezone,
+            latitude = latitude?.toFloat(),
+            longitude = longitude?.toFloat(),
+        )
+    }
+
     @OptIn(ExperimentalTime::class)
     private fun AddressHistoryEntity.toModel(): AddressHistory =
         when (addressVersion) {
