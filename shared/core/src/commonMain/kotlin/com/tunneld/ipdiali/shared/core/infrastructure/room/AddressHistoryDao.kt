@@ -44,6 +44,9 @@ interface AddressHistoryDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(entity: AddressHistoryEntity): Long
 
+    @Query("DELETE FROM AddressHistory")
+    suspend fun clearAll()
+
     @Query(
         """
         SELECT * 

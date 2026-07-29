@@ -77,6 +77,8 @@ class RoomAddressHistoryDataSource(
             )
             .map { it.toModel() }
 
+    override suspend fun clearAll() = dao.clearAll()
+
     @OptIn(ExperimentalTime::class)
     private fun AddressHistoryEntity.toModel(): AddressHistory =
         when (addressVersion) {

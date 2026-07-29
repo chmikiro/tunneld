@@ -27,4 +27,6 @@ interface AddressHistoryLocalDataSource {
         country: String? = null,
         networkTypes: Set<NetworkType> = emptySet(),
     ): List<AddressHistory>
+
+    suspend fun clearAll()
 }

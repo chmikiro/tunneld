@@ -5,6 +5,8 @@ import com.tunneld.ipdiali.shared.core.application.event.SharedFlowEventBus
 import com.tunneld.ipdiali.shared.core.application.eventhandler.IpAddressChangeHandler
 import com.tunneld.ipdiali.shared.core.application.usecase.ObserveAddressHistoryUseCase
 import com.tunneld.ipdiali.shared.core.application.usecase.ObserveAddressHistoryUseCaseImpl
+import com.tunneld.ipdiali.shared.core.application.usecase.ClearHistoryUseCase
+import com.tunneld.ipdiali.shared.core.application.usecase.ClearHistoryUseCaseImpl
 import com.tunneld.ipdiali.shared.core.application.usecase.ExportAddressHistoryUseCase
 import com.tunneld.ipdiali.shared.core.application.usecase.ExportAddressHistoryUseCaseImpl
 import com.tunneld.ipdiali.shared.core.application.usecase.ObserveCurrentIpAddressUseCase
@@ -54,6 +56,8 @@ fun sharedCoreApplicationModule(applicationCoroutineScope: CoroutineScope) = mod
     factoryOf(::SaveAddressHistoryUseCaseImpl).bind<SaveAddressHistoryUseCase>()
 
     factoryOf(::ExportAddressHistoryUseCaseImpl).bind<ExportAddressHistoryUseCase>()
+
+    factoryOf(::ClearHistoryUseCaseImpl).bind<ClearHistoryUseCase>()
 
     singleOf(::SharedFlowEventBus).bind<EventBus>()
 

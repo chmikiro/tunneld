@@ -20,6 +20,8 @@ import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -30,6 +32,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
@@ -51,6 +54,7 @@ import tunneld.composeapp.generated.resources.headline_history
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(
@@ -74,6 +78,8 @@ internal fun HomeScreen(
 ) {
     val clipboardManager = LocalClipboardManager.current
     val pullState = rememberPullToRefreshState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     var showFilters by rememberSaveable { mutableStateOf(false) }
     var detailModel by remember { mutableStateOf<AddressUiModel?>(null) }
@@ -90,7 +96,10 @@ internal fun HomeScreen(
         IpDetailDialog(
             model = model,
             onDismiss = { detailModel = null },
-            onCopyIp = { clipboardManager.copyToClipboard(it) },
+            onCopyIp = {
+                clipboardManager.copyToClipboard(it)
+                scope.launch { snackbarHostState.showSnackbar("Copied to clipboard") }
+            },
         )
     }
 
@@ -103,6 +112,7 @@ internal fun HomeScreen(
 
     Scaffold(
         modifier = modifier,
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             HomeTopBar(
                 filter = filter,
@@ -203,7 +213,10 @@ internal fun HomeScreen(
 
                     AddressButton(
                         model = item,
-                        onClick = { clipboardManager.copyToClipboard(item.address) },
+                        onClick = {
+                            clipboardManager.copyToClipboard(item.address)
+                            scope.launch { snackbarHostState.showSnackbar("Copied to clipboard") }
+                        },
                         containerColor = MaterialTheme.colorScheme.surfaceContainer,
                         contentColor = MaterialTheme.colorScheme.onSurface,
                         modifier = Modifier.animateItem().padding(bottom = 2.dp),
