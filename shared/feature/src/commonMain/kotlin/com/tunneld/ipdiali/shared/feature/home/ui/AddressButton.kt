@@ -335,7 +335,7 @@ internal fun IpDetailDialog(
     fun buildCopyText(): String {
         val selected = fields.filterKeys { selectedFields[it] == true }
         return if (selected.isEmpty()) model.address
-        else selected.entries.joinToString("\n") { "${it.key}: ${it.value}" }
+        else selected.entries.joinToString("; ") { "${it.key}: ${it.value}" }
     }
 
     Dialog(

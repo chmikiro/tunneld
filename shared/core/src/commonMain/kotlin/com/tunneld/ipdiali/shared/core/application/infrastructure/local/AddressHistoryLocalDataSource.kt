@@ -29,4 +29,6 @@ interface AddressHistoryLocalDataSource {
     ): List<AddressHistory>
 
     suspend fun clearAll()
+
+    suspend fun importCsv(csvContent: String)
 }
