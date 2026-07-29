@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -27,16 +29,23 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ButtonShapes
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -292,11 +301,42 @@ internal fun IpDetailDialog(
     onCopyIp: (String) -> Unit,
 ) {
     val dateFormatter = LocalDateFormatter.current
+    var showFieldSelector by remember { mutableStateOf(false) }
+    val selectedFields = remember { mutableStateMapOf<String, Boolean>() }
+    val networkTypeStr = model.networkType.stringResource()
     val ipLabel =
         when (model.internetProtocolVersion) {
             InternetProtocolVersion.IPV4 -> "IPv4 address"
             InternetProtocolVersion.IPV6 -> "IPv6 address"
         }
+
+    // Build available fields map
+    val fields = remember(model) {
+        val map = linkedMapOf<String, String>()
+        map["Address"] = model.address
+        map["Version"] = model.internetProtocolVersion.name
+        map["Network"] = networkTypeStr
+        model.ipInfo?.let { info ->
+            info.country?.let { map["Country"] = "$it ${countryCodeToFlag(info.countryCode ?: "")}" }
+            info.countryCode?.let { map["Country Code"] = it }
+            info.city?.let { map["City"] = it }
+            info.isp?.let { map["ISP"] = it }
+            info.org?.let { map["Organization"] = it }
+            info.timezone?.let { map["Timezone"] = it }
+            if (info.latitude != null && info.longitude != null) {
+                map["Coordinates"] = "%.4f, %.4f".format(info.latitude, info.longitude)
+            }
+        }
+        model.domain?.let { map["Domain"] = it }
+        map["Timestamp"] = dateFormatter.formatDateTimeLong(model.dateTime)
+        map
+    }
+
+    fun buildCopyText(): String {
+        val selected = fields.filterKeys { selectedFields[it] == true }
+        return if (selected.isEmpty()) model.address
+        else selected.entries.joinToString("\n") { "${it.key}: ${it.value}" }
+    }
 
     Dialog(
         onDismissRequest = onDismiss,
@@ -381,16 +421,107 @@ internal fun IpDetailDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.End),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
                 ) {
                     Button(
-                        onClick = { onCopyIp(model.address); onDismiss() },
+                        onClick = { onCopyIp(buildCopyText()); onDismiss() },
                         shape = RoundedCornerShape(10.dp),
                     ) {
-                        Text("Copy IP")
+                        Text(if (selectedFields.isEmpty()) "Copy IP" else "Copy Selected")
+                    }
+                    TextButton(onClick = { showFieldSelector = true }) {
+                        Text("Select Fields")
                     }
                     TextButton(onClick = onDismiss) {
                         Text("Close")
+                    }
+                }
+            }
+        }
+    }
+
+    if (showFieldSelector) {
+        FieldSelectorDialog(
+            fields = fields,
+            selectedFields = selectedFields,
+            onDismiss = { showFieldSelector = false },
+        )
+    }
+}
+
+@Composable
+private fun FieldSelectorDialog(
+    fields: Map<String, String>,
+    selectedFields: MutableMap<String, Boolean>,
+    onDismiss: () -> Unit,
+) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false),
+    ) {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            shape = RoundedCornerShape(20.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+            ),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
+            ) {
+                Text(
+                    text = "Select fields to copy",
+                    style = MaterialTheme.typography.titleMedium,
+                    modifier = Modifier.padding(24.dp, 24.dp, 24.dp, 8.dp),
+                )
+                Column(modifier = Modifier.selectableGroup()) {
+                    fields.forEach { (label, value) ->
+                        val isSelected = selectedFields[label] == true
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .selectable(
+                                    selected = isSelected,
+                                    onClick = { selectedFields[label] = !isSelected },
+                                    role = Role.Checkbox,
+                                )
+                                .padding(horizontal = 12.dp, vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Checkbox(
+                                checked = isSelected,
+                                onCheckedChange = { selectedFields[label] = it },
+                            )
+                            Column(modifier = Modifier.padding(start = 8.dp)) {
+                                Text(
+                                    text = label,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                )
+                                Text(
+                                    text = value,
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    maxLines = 1,
+                                )
+                            }
+                        }
+                    }
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
+                ) {
+                    TextButton(onClick = { selectedFields.clear(); onDismiss() }) {
+                        Text("Clear")
+                    }
+                    TextButton(onClick = onDismiss) {
+                        Text("Done")
                     }
                 }
             }
