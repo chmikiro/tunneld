@@ -15,7 +15,7 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.Engineering
-import androidx.compose.material.icons.outlined.FileOpen
+import androidx.compose.material.icons.outlined.FileUpload
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.TravelExplore
@@ -121,7 +121,7 @@ internal fun SettingsScreen(
                     modifier = Modifier.heightIn(min = 68.dp).clickable { onImportCsv() },
                     leadingContent = {
                         Icon(
-                            Icons.Outlined.FileOpen,
+                            Icons.Outlined.FileUpload,
                             contentDescription = null,
                         )
                     },
@@ -171,7 +171,7 @@ internal fun SettingsScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Text(
-                        "v0.2.1",
+                        "v0.2.2",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
                     )

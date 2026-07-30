@@ -23,7 +23,8 @@ import com.tunneld.ipdiali.shared.core.infrastructure.room.RoomTransactionScope
     version = FindMyIpDatabase.VERSION,
     autoMigrations =
         [
-            AutoMigration(from = 1, to = 2)
+            AutoMigration(from = 1, to = 2),
+            AutoMigration(from = 5, to = 6),
             /** @see [MIGRATION_2_3] 3.0.0 -> 4.0.0 migration */
             /** @see [FindMyIP5Migration] 4.1.2 -> 5.0.0 migration */
             /** @see [FindMyIP6Migration] 5.x -> 6.x migration — IP enrichment columns */
@@ -52,7 +53,7 @@ internal abstract class FindMyIpDatabase : RoomDatabase(), TransactionProvider {
         }
 
     companion object {
-        const val VERSION = 5
+        const val VERSION = 6
 
         private val migrations = arrayOf(MIGRATION_2_3, FindMyIP5Migration, FindMyIP6Migration)
 
