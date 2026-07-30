@@ -16,6 +16,7 @@ data class AddressHistoryEntity(
     val city: String? = null,
     val isp: String? = null,
     val org: String? = null,
+    val asn: String? = null,
     val timezone: String? = null,
     val latitude: Float? = null,
     val longitude: Float? = null,

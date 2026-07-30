@@ -105,7 +105,7 @@ class RoomAddressHistoryDataSource(
             }
         }
         fields.add(current.toString().trim('"'))
-        if (fields.size < 12) return null
+        if (fields.size < 13) return null
         return CsvRow(
             address = fields[0],
             version = fields[1],
@@ -115,10 +115,11 @@ class RoomAddressHistoryDataSource(
             city = fields[5].ifBlank { null },
             isp = fields[6].ifBlank { null },
             org = fields[7].ifBlank { null },
-            timezone = fields[8].ifBlank { null },
-            latitude = fields[9].toDoubleOrNull(),
-            longitude = fields[10].toDoubleOrNull(),
-            timestamp = fields[11],
+            asn = fields[8].ifBlank { null },
+            timezone = fields[9].ifBlank { null },
+            latitude = fields[10].toDoubleOrNull(),
+            longitude = fields[11].toDoubleOrNull(),
+            timestamp = fields[12],
         )
     }
 
@@ -131,6 +132,7 @@ class RoomAddressHistoryDataSource(
         val city: String?,
         val isp: String?,
         val org: String?,
+        val asn: String?,
         val timezone: String?,
         val latitude: Double?,
         val longitude: Double?,
@@ -170,6 +172,7 @@ class RoomAddressHistoryDataSource(
             city = city,
             isp = isp,
             org = org,
+            asn = asn,
             timezone = timezone,
             latitude = latitude?.toFloat(),
             longitude = longitude?.toFloat(),
@@ -236,6 +239,7 @@ class RoomAddressHistoryDataSource(
             city = info?.city,
             isp = info?.isp,
             org = info?.org,
+            asn = info?.asn,
             timezone = info?.timezone,
             latitude = info?.latitude,
             longitude = info?.longitude,
@@ -258,7 +262,7 @@ class RoomAddressHistoryDataSource(
             region = null,
             isp = isp,
             org = org,
-            asn = null,
+            asn = asn,
             timezone = timezone,
             latitude = latitude,
             longitude = longitude,

@@ -322,6 +322,7 @@ internal fun IpDetailDialog(
             info.city?.let { map["City"] = it }
             info.isp?.let { map["ISP"] = it }
             info.org?.let { map["Organization"] = it }
+            info.asn?.let { map["ASN"] = "AS$it" }
             info.timezone?.let { map["Timezone"] = it }
             if (info.latitude != null && info.longitude != null) {
                 map["Coordinates"] = "%.4f, %.4f".format(info.latitude, info.longitude)

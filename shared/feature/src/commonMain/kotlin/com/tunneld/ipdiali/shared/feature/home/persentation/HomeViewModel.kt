@@ -132,7 +132,7 @@ internal class HomeViewModel(
         )
 
         val sb = StringBuilder()
-        sb.appendLine("address,version,network_type,country,country_code,city,isp,org,timezone,latitude,longitude,timestamp")
+        sb.appendLine("address,version,network_type,country,country_code,city,isp,org,asn,timezone,latitude,longitude,timestamp")
         results.forEach { item ->
             val info = when (item) {
                 is AddressHistory.Ipv4 -> item.ipInfo
@@ -153,6 +153,7 @@ internal class HomeViewModel(
                     info?.city ?: "",
                     info?.isp ?: "",
                     info?.org ?: "",
+                    info?.asn ?: "",
                     info?.timezone ?: "",
                     info?.latitude?.toString() ?: "",
                     info?.longitude?.toString() ?: "",
