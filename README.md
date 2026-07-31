@@ -18,6 +18,7 @@ Inspired by [Find My IP](https://github.com/maksimowiczm/find-my-ip) by Mateusz 
 - DNS leak test: checks which DNS servers your device is actually using – Please note that this service is delivered by us, you can find the web version on [ipdia.li](https://ipdia.li)
 - Filters history by IP version (v4/v6), network type (Wi-Fi/Cellular/VPN), and country (partial, case-insensitive)
 - Exports filtered history to CSV `(address, version, network_type, country, country_code, city, isp, org, timezone, latitude, longitude, timestamp)`
+- Import/restore previously exported history
 
 
 ## Tech
@@ -30,12 +31,11 @@ Inspired by [Find My IP](https://github.com/maksimowiczm/find-my-ip) by Mateusz 
 
 
 ## VT Scan Report
-- No false positives on [Virus Total](https://www.virustotal.com/gui/file/a12d3244a59634b4ce0c1314affe917c658573590b8c1ab052dd88d070be3610/detection)
+- No false positives on [Virus Total](https://[www.virustotal.com/gui/file/a12d3244a59634b4ce0c1314affe917c658573590b8c1ab052dd88d070be3610/detection](https://www.virustotal.com/gui/file/c0a8ffb532ebb7d1c67f9f289a63e10efaf4f9859817b58588ed109a80970502/detection))
 
 
 ## Get it
 
-- F-Droid: `com.tunneld.ipdiali`
 - GitHub Releases: download the signed APK from [releases](https://github.com/chmikiro/tunneld/releases)
 
 
