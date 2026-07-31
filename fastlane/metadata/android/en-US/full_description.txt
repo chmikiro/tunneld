@@ -1,0 +1,12 @@
+Tunnel'd is a no-bullshit IP address tracker and DNS leak tester. No accounts, no analytics, no telemetry — your data stays on your device.
+
+Features:
+• See your public IP (v4 and v6) at a glance
+• DNS leak test to verify your VPN is actually working
+• History of your IP addresses with rich geolocation details
+• Filter by IP version, network type (Wi-Fi/Cellular/VPN), and country
+• Export and import your history as CSV
+• Copy selected fields from any IP entry
+• Dark/light/system theme support
+• Background notifications when your IP changes
+• Zero third-party analytics or tracking SDKs
