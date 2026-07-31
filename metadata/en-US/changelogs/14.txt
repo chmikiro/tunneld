@@ -1,3 +1,0 @@
-Translations
-- Added Arabic language
-- Added Simplified Chinese language

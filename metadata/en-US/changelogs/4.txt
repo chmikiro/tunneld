@@ -1,3 +1,0 @@
-- Translate to PT-BR by @lucasmz-dev
-- Improved navigation
-- Fixed Internet Protocol settings
