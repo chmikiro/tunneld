@@ -11,7 +11,7 @@ Changelog: https://github.com/chmikiro/tunneld/releases
 WebSite: https://ipdia.li
 
 RepoType: git
-Repo: https://gitlab.com/chmikiro-group/tunneld.git
+Repo: https://github.com/chmikiro/tunneld.git
 
 Builds:
   - versionName: '0.2.2'
