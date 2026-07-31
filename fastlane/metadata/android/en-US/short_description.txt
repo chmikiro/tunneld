@@ -1,0 +1,1 @@
+No-bullshit IP tracker + DNS leak test. Data stays on-device.

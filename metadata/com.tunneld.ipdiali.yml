@@ -1,0 +1,32 @@
+# Tunnel'd — F-Droid build recipe
+# https://gitlab.com/chmikiro-group/tunneld
+
+Categories:
+  - Internet
+  - System
+License: GPL-3.0-only
+SourceCode: https://gitlab.com/chmikiro-group/tunneld
+IssueTracker: https://github.com/chmikiro/tunneld/issues
+Changelog: https://github.com/chmikiro/tunneld/releases
+WebSite: https://ipdia.li
+
+RepoType: git
+Repo: https://github.com/chmikiro/tunneld.git
+
+Builds:
+  - versionName: '0.2.2'
+    versionCode: 9
+    commit: v0.2.2
+    subdir: .
+    gradle:
+      - yes
+    prebuild:
+      - sed -i '/signingConfigs/,/}/d' opensource/composeApp/build.gradle.kts
+      - sed -i 's/signingConfig signingConfigs.release//' opensource/composeApp/build.gradle.kts
+    build: ./gradlew :opensource:composeApp:assembleRelease
+    output: opensource/composeApp/build/outputs/apk/release/composeApp-release.apk
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+CurrentVersion: '0.2.2'
+CurrentVersionCode: 9
