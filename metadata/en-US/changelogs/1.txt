@@ -1,0 +1,9 @@
+Initial release of Tunnel'd.
+
+    IP address logger with history and geolocation
+    DNS leak test
+    Background notifications on IP change
+    Filters by IP version (v4/v6), network type (Wi-Fi/Cellular/VPN), country (partial typing, case-insensitive)
+    CSV export of filtered history
+
+Inspired by Find My IP by Mateusz Maksimowicz.
