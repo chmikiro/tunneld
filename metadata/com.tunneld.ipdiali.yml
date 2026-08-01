@@ -1,11 +1,11 @@
 # Tunnel'd — F-Droid build recipe
-# https://gitlab.com/chmikiro-group/tunneld
+# https://github.com/chmikiro/tunneld
 
 Categories:
   - Internet
   - System
 License: GPL-3.0-only
-SourceCode: https://gitlab.com/chmikiro-group/tunneld
+SourceCode: https://github.com/chmikiro/tunneld
 IssueTracker: https://github.com/chmikiro/tunneld/issues
 Changelog: https://github.com/chmikiro/tunneld/releases
 WebSite: https://ipdia.li
