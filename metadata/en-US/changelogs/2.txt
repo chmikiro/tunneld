@@ -1,0 +1,1 @@
+Fixed import icon, theme icon, clickable GitHub/ipdia.li links in credits.
