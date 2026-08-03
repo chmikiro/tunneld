@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Tunnel'd — Interactive VPN Analytics</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js">
+// Fallback: if offline, show message instead of crashing
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0d1117;color:#c9d1d9;padding:20px}
+h1{font-size:1.4rem;margin-bottom:4px}
+.meta{color:#8b949e;font-size:.78rem;margin-bottom:16px}
+.breadcrumb{display:flex;align-items:center;gap:6px;margin-bottom:14px;flex-wrap:wrap;font-size:.82rem}
+.breadcrumb span{color:#58a6ff;cursor:pointer}
+.breadcrumb span:hover{text-decoration:underline}
+.breadcrumb .sep{color:#484f58;cursor:default}
+.breadcrumb .clear{color:#f85149;cursor:pointer;margin-left:8px;font-size:.75rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:16px}
+.card{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:12px;text-align:center;cursor:pointer;transition:border-color .15s}
+.card:hover{border-color:#58a6ff}
+.card.sel{border-color:#3fb950;background:#23863611}
+.card .v{font-size:1.6rem;font-weight:700;color:#58a6ff}
+.card .v.g{color:#3fb950}.card .v.r{color:#f85149}
+.card .l{font-size:.68rem;color:#8b949e;text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:768px){.row{grid-template-columns:1fr}}
+.box{background:#161b22;border:1px solid #30363d;border-radius:8px;padding:14px}
+.box h2{font-size:.9rem;color:#8b949e;margin-bottom:10px;font-weight:500}
+canvas{max-height:280px;cursor:pointer}
+.info{font-size:.78rem;color:#8b949e;margin-top:4px;text-align:center;font-style:italic}
+input{width:100%;padding:8px 12px;background:#161b22;border:1px solid #30363d;border-radius:6px;color:#c9d1d9;font-size:.8rem;margin-bottom:8px}
+input:focus{outline:none;border-color:#58a6ff}
+.tbl{max-height:350px;overflow:auto;border:1px solid #30363d;border-radius:6px}
+table{width:100%;border-collapse:collapse;font-size:.76rem}
+th{position:sticky;top:0;background:#1c2128;color:#8b949e;padding:7px 10px;text-align:left;font-weight:500;border-bottom:2px solid #30363d;cursor:pointer}
+th:hover{color:#f0f6fc}
+td{padding:5px 10px;border-bottom:1px solid #21262d}
+tr:hover{background:#161b22}
+.upload-zone {
+  border: 2px dashed #30363d; border-radius: 8px; padding: 24px; text-align: center;
+  cursor: pointer; margin-bottom: 16px; transition: border-color .15s, background .15s;
+}
+.upload-zone:hover, .upload-zone.drag { border-color: #58a6ff; background: #161b22; }
+.upload-zone .label { color: #8b949e; font-size: .85rem; }
+.upload-zone .hint { color: #484f58; font-size: .7rem; margin-top: 4px; }
+.upload-zone .ready { color: #3fb950; }
+</style>
+</head>
+<body>
+<h1>🔐 Tunnel'd — Interactive VPN Analytics</h1>
+<div class="meta" id="metaLine">Drop your Tunnel'd CSV export to begin</div>
+
+<div id="uploadZone" class="upload-zone" onclick="document.getElementById('fileInput').click()">
+  <div class="label">📁 Drop CSV file here or click to browse</div>
+  <div class="hint">Export from Tunnel'd → Settings → Export CSV</div>
+</div>
+<input type="file" id="fileInput" accept=".csv" style="display:none" onchange="loadFile(this.files[0])">
+
+<div class="breadcrumb" id="bc"><span onclick="clearFilter()">🌐 All</span></div>
+<div class="grid" id="cards"></div>
+<div class="row">
+  <div class="box"><h2 id="ctitle">Top Countries</h2><canvas id="countryChart"></canvas><div class="info">Click a bar to drill down</div></div>
+  <div class="box"><h2 id="dtitle">Daily Connections</h2><canvas id="dailyChart"></canvas><div class="info">Click a point to see that day</div></div>
+</div>
+<div class="row">
+  <div class="box"><h2 id="otitle">Top Providers</h2><canvas id="orgChart"></canvas><div class="info">Click a bar to drill down</div></div>
+  <div class="box"><h2>VPN vs WiFi</h2><canvas id="typeChart" style="max-height:220px"></canvas><div class="info" id="typeInfo"></div></div>
+</div>
+<div class="row">
+  <div class="box" style="grid-column:1/-1"><h2>Details</h2><input id="filt" placeholder="Filter..." oninput="renderTable()"><div class="tbl"><table><thead><tr><th>IP</th><th>Country</th><th>Provider</th><th>City</th><th>ASN</th><th>Type</th><th>Time</th></tr></thead><tbody id="tb"></tbody></table></div></div>
+</div>
+
+<script>
+// ── Global state ──
+let ALL = [];           // raw rows: [ip, country, provider, city, cc, type, asn, time]
+let filter = {type:null, value:null};
+let filtered = [];
+let cChart=null, dChart=null, oChart=null, tChart=null;
+
+// ── CSV parser ──
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+  // Detect header: first line starts with "address"? Skip it.
+  let start = lines[0].startsWith('address') ? 1 : 0;
+  const rows = [];
+  for (let i = start; i < lines.length; i++) {
+    const f = parseLine(lines[i]);
+    if (!f || f.length < 7) continue;
+    // Columns: address, version, network_type, country, country_code, city, isp, org, asn, timezone, lat, lon, timestamp
+    // We extract: ip, country, provider, city, country_code, type, asn, timestamp
+    rows.push([
+      f[0] || '',           // IP
+      f[3] || 'Unknown',    // country
+      f[6] || f[7] || f[5] || 'Unknown',  // provider (isp → org → city fallback)
+      f[5] || '',           // city
+      f[4] || '',           // country_code
+      f[2] || 'Unknown',    // network_type
+      f[8] || '',           // asn
+      f[12] || '',          // timestamp
+    ]);
+  }
+  return rows;
+}
+
+function parseLine(line) {
+  const fields = [];
+  let cur = '', inQuotes = false;
+  for (let ch of line) {
+    if (ch === '"' && !inQuotes) { inQuotes = true; continue; }
+    if (ch === '"' && inQuotes) { inQuotes = false; continue; }
+    if (ch === ',' && !inQuotes) { fields.push(cur); cur = ''; continue; }
+    cur += ch;
+  }
+  fields.push(cur);
+  return fields;
+}
+
+// ── File loading ──
+function loadFile(file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    ALL = parseCSV(e.target.result);
+    if (ALL.length === 0) {
+      document.getElementById('metaLine').textContent = '⚠️ No valid rows found. Is this a Tunnel\'d CSV export?';
+      return;
+    }
+    clearFilter();
+    document.getElementById('uploadZone').style.display = 'none';
+  };
+  reader.readAsText(file);
+}
+
+// Drag-and-drop
+const zone = document.getElementById('uploadZone');
+['dragenter','dragover'].forEach(evt => { zone.addEventListener(evt, e => { e.preventDefault(); zone.classList.add('drag'); }); });
+['dragleave','drop'].forEach(evt => { zone.addEventListener(evt, e => { e.preventDefault(); zone.classList.remove('drag'); }); });
+zone.addEventListener('drop', e => { loadFile(e.dataTransfer.files[0]); });
+
+// ── Counter utility ──
+function Counter() {
+  let m = new Map();
+  return {
+    add: function(k) { m.set(k, (m.get(k)||0)+1); },
+    inc: function(k,n) { m.set(k, (m.get(k)||0)+(n||1)); },
+    entries: function() { return [...m.entries()]; },
+    get: function(k) { return m.get(k)||0; },
+    mostCommon: function(n) { return [...m.entries()].sort((a,b)=>b[1]-a[1]).slice(0,n); }
+  };
+}
+
+// ── Filtering ──
+function applyFilter() {
+  if (!filter.type) { filtered = ALL; return; }
+  filtered = ALL.filter(r => {
+    if (filter.type === 'country') return r[1] === filter.value;
+    if (filter.type === 'org')    return r[2] === filter.value;
+    if (filter.type === 'day')    return (r[7]||'').startsWith(filter.value);
+    return true;
+  });
+}
+
+function clearFilter() {
+  filter = {type:null, value:null};
+  applyFilter();
+  updateAll();
+}
+
+function setFilter(t,v) {
+  filter = {type:t, value:v};
+  applyFilter();
+  updateAll();
+  document.getElementById('bc').innerHTML = '<span onclick="clearFilter()">🌐 All</span> <span class="sep">→</span> <span>'+v+'</span> <span class="clear" onclick="clearFilter()">✕ clear</span>';
+}
+
+// ── Filtered counts ──
+function filteredCounts() {
+  let c = Counter(), o = Counter(), d = Counter(), nt = Counter();
+  filtered.forEach(r => {
+    c.add(r[1]);
+    o.add(r[2]);
+    nt.add(r[5]);
+    let dd = (r[7]||'').slice(0,10);
+    if (dd) d.add(dd);
+  });
+  return {countries:c, orgs:o, daily:d, networkTypes:nt};
+}
+
+// ── Main render ──
+function updateAll() {
+  if (ALL.length === 0) return;
+  let fc = filteredCounts();
+
+  // Meta line
+  let tz = document.getElementById('uploadZone').style.display === 'none';
+  if (!tz) return;
+  document.getElementById('metaLine').textContent =
+    filter.type
+      ? 'Filtered: '+filtered.length+' / '+ALL.length+' connections'
+      : 'All: '+ALL.length+' connections · '+fc.countries.entries().length+' countries · '+fc.orgs.entries().length+' providers';
+
+  // Country chart
+  let topC = fc.countries.mostCommon(filter.type ? 10 : 15);
+  let clabels = topC.map(c => c[0]), cdata = topC.map(c => c[1]);
+  let pctFn = filtered.length || 1;
+  if (cChart) cChart.destroy();
+  cChart = new Chart(document.getElementById('countryChart'), {
+    type: 'bar',
+    data: {
+      labels: clabels,
+      datasets: [{
+        data: cdata,
+        backgroundColor: clabels.map((_,i) => 'hsl('+(200+i*18)+',55%,50%)'),
+        borderRadius: 3
+      }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true,
+      plugins: { legend: {display:false}, tooltip: {callbacks: {label: function(ctx) { return ctx.raw+' ('+(ctx.raw/pctFn*100).toFixed(1)+'%)'; }}} },
+      onClick: function(evt, els) { if (els.length && filter.type !== 'country') { let idx = els[0].index; setFilter('country', clabels[idx]); } },
+      scales: {
+        x: { grid: {color:'#21262d'}, ticks: {color:'#8b949e'} },
+        y: { grid: {display:false}, ticks: {color:'#8b949e', font:{size:10}} }
+      }
+    }
+  });
+
+  // Daily chart
+  let dall = fc.daily.entries().sort((a,b) => a[0].localeCompare(b[0]));
+  let dlabs = dall.map(d => d[0].slice(5)), ddat = dall.map(d => d[1]);
+  if (dChart) dChart.destroy();
+  dChart = new Chart(document.getElementById('dailyChart'), {
+    type: 'line',
+    data: {
+      labels: dlabs,
+      datasets: [{
+        data: ddat, borderColor: '#58a6ff', backgroundColor: '#58a6ff22',
+        fill: true, pointRadius: ddat.length > 30 ? 1 : 3, tension: .3
+      }]
+    },
+    options: {
+      responsive: true, plugins: {legend: {display:false}},
+      onClick: function(evt, els) { if (els.length && filter.type !== 'day') { let idx = els[0].index; setFilter('day', dall[idx][0]); } },
+      scales: {
+        x: { grid: {color:'#21262d'}, ticks: {color:'#8b949e', maxTicksLimit:25, font:{size:8}} },
+        y: { grid: {color:'#21262d'}, ticks: {color:'#8b949e'} }
+      }
+    }
+  });
+
+  // Provider chart
+  let topO = fc.orgs.mostCommon(filter.type ? 8 : 10);
+  let olabs = topO.map(o => o[0]), odat = topO.map(o => o[1]);
+  let oColors = ['#3fb950','#58a6ff','#a371f7','#d2991d','#f85149','#7ee787','#db6d28','#8b949e','#f778ba','#56d4dd','#e55354','#4da6ff'];
+  if (oChart) oChart.destroy();
+  oChart = new Chart(document.getElementById('orgChart'), {
+    type: 'bar',
+    data: {
+      labels: olabs,
+      datasets: [{
+        data: odat,
+        backgroundColor: olabs.map((_,i) => oColors[i % oColors.length]),
+        borderRadius: 3
+      }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true,
+      plugins: { legend: {display:false}, tooltip: {callbacks: {label: function(ctx) { return ctx.raw+' ('+(ctx.raw/pctFn*100).toFixed(1)+'%)'; }}} },
+      onClick: function(evt, els) { if (els.length && filter.type !== 'org') { let idx = els[0].index; setFilter('org', olabs[idx]); } },
+      scales: {
+        x: { grid: {color:'#21262d'}, ticks: {color:'#8b949e'} },
+        y: { grid: {display:false}, ticks: {color:'#8b949e', font:{size:10}} }
+      }
+    }
+  });
+
+  // VPN/WiFi doughnut
+  let vpnCount = fc.networkTypes.get('VPN')||0, wifiCount = fc.networkTypes.get('WiFi')||0;
+  let totalNT = vpnCount + wifiCount || 1;
+  if (tChart) tChart.destroy();
+  tChart = new Chart(document.getElementById('typeChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['VPN','WiFi'],
+      datasets: [{data:[vpnCount,wifiCount], backgroundColor:['#3fb950','#58a6ff'], borderColor:'#161b22', borderWidth:2}]
+    },
+    options: {
+      responsive: true, cutout:'60%',
+      plugins: {legend: {position:'bottom', labels:{color:'#8b949e', padding:16, font:{size:11}}}}
+    }
+  });
+  document.getElementById('typeInfo').textContent =
+    'VPN: '+vpnCount+' ('+(vpnCount/totalNT*100).toFixed(1)+'%) · WiFi: '+wifiCount+' ('+(wifiCount/totalNT*100).toFixed(1)+'%)';
+
+  // Summary cards
+  document.getElementById('cards').innerHTML =
+    '<div class="card" onclick="clearFilter()"><div class="v">'+fc.countries.entries().length+'</div><div class="l">Countries</div></div>'+
+    '<div class="card"><div class="v">'+fc.orgs.entries().length+'</div><div class="l">Providers</div></div>'+
+    '<div class="card"><div class="v g">'+vpnCount+'</div><div class="l">VPN ('+(vpnCount/totalNT*100).toFixed(1)+'%)</div></div>'+
+    '<div class="card"><div class="v r">'+wifiCount+'</div><div class="l">WiFi ('+(wifiCount/totalNT*100).toFixed(1)+'%)</div></div>'+
+    '<div class="card"><div class="v">'+fc.daily.entries().length+'d</div><div class="l">Days</div></div>'+
+    '<div class="card"><div class="v">'+filtered.length+'</div><div class="l">Total</div></div>';
+
+  // Chart titles
+  document.getElementById('ctitle').textContent = filter.type==='country' ? 'Countries → '+filter.value : filter.type==='org' ? 'Provider: '+filter.value+' — Countries' : 'Top Countries';
+  document.getElementById('otitle').textContent = filter.type==='org' ? 'Providers → '+filter.value : filter.type==='country' ? 'Country: '+filter.value+' — Providers' : 'Top Providers';
+  document.getElementById('dtitle').textContent = filter.type==='day' ? 'Day: '+filter.value : 'Daily Connections';
+
+  renderTable();
+}
+
+// ── Detail table ──
+function renderTable() {
+  let q = document.getElementById('filt').value.toLowerCase();
+  let d = q ? filtered.filter(r => r.some(c => String(c).toLowerCase().includes(q))) : filtered;
+  document.getElementById('tb').innerHTML = d.slice(0, 300).map(r =>
+    '<tr>'+
+    '<td style="font-family:monospace;font-size:.72rem">'+r[0]+'</td>'+
+    '<td>'+r[1]+'</td>'+
+    '<td>'+r[2]+'</td>'+
+    '<td>'+r[3]+'</td>'+
+    '<td style="font-size:.7rem;color:#8b949e">'+(r[6]||'')+'</td>'+
+    '<td style="color:'+(r[5]==='VPN'?'#3fb950':'#58a6ff')+'">'+r[5]+'</td>'+
+    '<td style="font-size:.7rem;color:#8b949e">'+(r[7]||'').replace('T',' ')+'</td>'+
+    '</tr>'
+  ).join('');
+}
+
+// ── Boot ──
+// Expose for JS bridge injection from Android WebView
+window.loadTunneldCSV = function(csvString) {
+  ALL = parseCSV(csvString);
+  clearFilter();
+  document.getElementById('uploadZone').style.display = 'none';
+};
+</script>
+</body>
+</html>
