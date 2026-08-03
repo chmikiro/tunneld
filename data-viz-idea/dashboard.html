@@ -29,7 +29,7 @@ canvas{max-height:280px;cursor:pointer}
 .info{font-size:.78rem;color:#8b949e;margin-top:4px;text-align:center;font-style:italic}
 input{width:100%;padding:8px 12px;background:#161b22;border:1px solid#30363d;border-radius:6px;color:#c9d1d9;font-size:.8rem;margin-bottom:8px}
 input:focus{outline:none;border-color:#58a6ff}
-.tbl{max-height:350px;overflow:auto;border:1px solid#30363d;border-radius:6px}
+.tbl{max-height:45vh;overflow:auto;border:1px solid#30363d;border-radius:6px}
 table{width:100%;border-collapse:collapse;font-size:.76rem}
 th{position:sticky;top:0;background:#1c2128;color:#8b949e;padding:7px 10px;text-align:left;font-weight:500;border-bottom:2px solid#30363d;cursor:pointer}
 th:hover{color:#f0f6fc}
@@ -56,14 +56,14 @@ tr:hover{background:#161b22}
 <div class="grid" id="cards"></div>
 <div class="row">
   <div class="box"><h2 id="ctitle">Top Countries</h2><canvas id="countryChart"></canvas><div class="info">Click a bar to drill down</div></div>
-  <div class="box"><h2 id="dtitle">Daily Connections</h2><canvas id="dailyChart"></canvas><div class="info">Click a point to see that day</div></div>
+  <div class="box"><h2 id="dtitle">Daily new IP addresses</h2><canvas id="dailyChart"></canvas><div class="info">Click a point to see that day</div></div>
 </div>
 <div class="row">
   <div class="box"><h2 id="otitle">Top Providers</h2><canvas id="orgChart"></canvas><div class="info">Click a bar to drill down</div></div>
-  <div class="box"><h2>VPN vs WiFi</h2><canvas id="typeChart" style="max-height:220px"></canvas><div class="info" id="typeInfo"></div></div>
+  <div class="box"><h2>Network type overview</h2><canvas id="typeChart" style="max-height:220px"></canvas><div class="info" id="typeInfo"></div></div>
 </div>
 <div class="row">
-  <div class="box" style="grid-column:1/-1"><h2>Details</h2><input id="filt" placeholder="Filter..." oninput="renderTable()"><div class="tbl"><table><thead><tr><th>IP</th><th>Country</th><th>Provider</th><th>City</th><th>ASN</th><th>Type</th><th>Time</th></tr></thead><tbody id="tb"></tbody></table></div></div>
+  <div class="box" style="grid-column:1/-1"><h2>Details</h2><input id="filt" placeholder="Filter IP, country, provider, city, ASN..." oninput="renderTable()"><div class="tbl"><table><thead><tr><th>IP</th><th>Country</th><th>Provider</th><th>City</th><th>ASN</th><th>Type</th><th>Time</th></tr></thead><tbody id="tb"></tbody></table></div></div>
 </div>
 <script>
 // ── Demo data (fallback, overridden on CSV drop) ──
@@ -181,7 +181,7 @@ function updateAll(){
   let pctFn=filtered.length?filtered.length:1;
   if(cChart)cChart.destroy();
   cChart=new Chart(document.getElementById('countryChart'),{type:'bar',data:{labels:clabels,
-    datasets:[{data:cdata,backgroundColor:clabels.map((_,i)=>'hsl('+(200+i*18)+',55%,50%)'),borderRadius:3}]},
+    datasets:[{data:cdata,backgroundColor:clabels.map((_,i)=>'hsl('+(200+i*22)+',30%,35%)'),borderRadius:3}]},
     options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){return ctx.raw+' ('+(ctx.raw/pctFn*100).toFixed(1)+'%)'}}}},
     onClick:function(evt,els){if(els.length&&filter.type!=='country'){let idx=els[0].index;setFilter('country',clabels[idx])}},
     scales:{x:{grid:{color:'#21262d'},ticks:{color:'#8b949e'}},y:{grid:{display:false},ticks:{color:'#8b949e',font:{size:10}}}}}});
@@ -229,7 +229,7 @@ function updateAll(){
   // Titles
   document.getElementById('ctitle').textContent=filter.type==='country'?'Countries → '+filter.value:filter.type==='org'?'Provider: '+filter.value+' — Countries':'Top Countries';
   document.getElementById('otitle').textContent=filter.type==='org'?'Providers → '+filter.value:filter.type==='country'?'Country: '+filter.value+' — Providers':'Top Providers';
-  document.getElementById('dtitle').textContent=filter.type==='day'?'Day: '+filter.value:'Daily Connections';
+  document.getElementById('dtitle').textContent=filter.type==='day'?'Day: '+filter.value:'Daily new IP addresses';
 
   renderTable();
 }

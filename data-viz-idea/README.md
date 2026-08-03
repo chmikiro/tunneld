@@ -13,6 +13,10 @@ After a few iterations — starting with a plain CSV table, then adding Chart.js
 
 What started as "visualize my export" became "every Tunnel'd user should have this."
 
+A concrete example: the dashboard revealed only 4 WiFi connections out of 1,802 — moments of inattention (two of which I was napping). Without the viz, these would be buried in a flat list. With it, you instantly see the story your data is telling.
+
+That's why Tunnel'd exists. A true audit trail — it catches what you'd otherwise never know about.
+
 ## What
 
 An interactive analytics dashboard that visualizes a Tunnel'd user's connection history. Uses the existing CSV export format as input — zero backend needed.
@@ -66,7 +70,9 @@ Embed a WebView tab in Tunnel'd that loads the dashboard directly from the app's
 ### Stage 3 — Live Interactive
 Replace the static HTML approach with native Compose charts. Click events trigger SQL queries against the Room database. Full native performance, offline, no WebView.
 
-## Files
+## Known Issues
+
+- **CSV file picker:** drag-and-drop works correctly in most browsers, but the click-to-browse file picker may not render data on first load in some environments. If the file picker shows no data after selection, drag the same file onto the drop zone instead. This is a browser security quirk (file:// origin + FileReader timing) and will be irrelevant once the dashboard loads via WebView (Stage 1), where the CSV is injected via JS bridge.
 
 | File | Purpose |
 |------|---------|
