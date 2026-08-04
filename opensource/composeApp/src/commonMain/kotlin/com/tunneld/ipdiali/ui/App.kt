@@ -10,8 +10,15 @@ import com.tunneld.ipdiali.shared.core.feature.ui.ThemeState
 internal fun App(
     onExportCsv: (csvContent: String) -> Unit = {},
     onImportCsv: () -> Unit = {},
+    dashboardComposable: @Composable () -> Unit = {},
 ) {
     FindMyIpTheme(themeMode = ThemeState.themeMode) {
-        Surface { AppNavHost(onExportCsv = onExportCsv, onImportCsv = onImportCsv) }
+        Surface {
+            AppNavHost(
+                onExportCsv = onExportCsv,
+                onImportCsv = onImportCsv,
+                dashboardComposable = dashboardComposable,
+            )
+        }
     }
 }

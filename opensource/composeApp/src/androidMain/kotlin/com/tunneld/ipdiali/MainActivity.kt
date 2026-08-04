@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.tunneld.ipdiali.feature.dashboard.DashboardRoute
 import com.tunneld.ipdiali.shared.core.feature.ui.ProvideUtilities
 import com.tunneld.ipdiali.shared.core.presentation.AndroidClipboardManager
 import com.tunneld.ipdiali.shared.core.presentation.AndroidDateFormatter
@@ -41,6 +42,9 @@ class MainActivity : AppCompatActivity() {
                         },
                         onImportCsv = {
                             openDocument.launch(arrayOf("text/*", "*/*"))
+                        },
+                        dashboardComposable = {
+                            DashboardRoute(onBack = { finish() })
                         },
                     )
                 },

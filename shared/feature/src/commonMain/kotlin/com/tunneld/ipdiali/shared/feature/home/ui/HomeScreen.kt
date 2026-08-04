@@ -74,6 +74,7 @@ internal fun HomeScreen(
     onSettings: () -> Unit,
     onFilterUpdate: (Filter) -> Unit,
     onExportCsv: () -> Unit,
+    onDashboard: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val clipboardManager = LocalClipboardManager.current
@@ -120,6 +121,7 @@ internal fun HomeScreen(
                 onSearch = onSearch,
                 onSettings = onSettings,
                 onExportCsv = onExportCsv,
+                onDashboard = onDashboard,
                 onFilter = { showFilters = true },
             )
         },

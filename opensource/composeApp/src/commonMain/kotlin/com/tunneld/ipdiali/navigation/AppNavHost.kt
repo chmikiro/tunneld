@@ -6,7 +6,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.tunneld.ipdiali.feature.background.ui.RunInBackgroundRoute
 import com.tunneld.ipdiali.shared.core.navigation.forwardBackwardComposable
-import com.tunneld.ipdiali.shared.feature.dashboard.ui.DashboardRoute
 import com.tunneld.ipdiali.shared.feature.notifications.ui.NotificationsRoute
 import com.tunneld.ipdiali.shared.feature.settings.ui.SettingsRoute
 
@@ -14,6 +13,7 @@ import com.tunneld.ipdiali.shared.feature.settings.ui.SettingsRoute
 internal fun AppNavHost(
     onExportCsv: (csvContent: String) -> Unit,
     onImportCsv: () -> Unit,
+    dashboardComposable: @Composable () -> Unit = {},
     modifier: Modifier = Modifier.Companion,
 ) {
     val navController = rememberNavController()
@@ -29,6 +29,9 @@ internal fun AppNavHost(
                     navController.navigate(Route.Settings.name) { launchSingleTop = true }
                 },
                 onExportCsv = onExportCsv,
+                onDashboard = {
+                    navController.navigate(Route.Dashboard.name) { launchSingleTop = true }
+                },
             )
         }
         forwardBackwardComposable(Route.Settings.name) {
@@ -55,9 +58,7 @@ internal fun AppNavHost(
             )
         }
         forwardBackwardComposable(Route.Dashboard.name) {
-            DashboardRoute(
-                onBack = { navController.popBackStack(Route.Dashboard.name, inclusive = true) }
-            )
+            dashboardComposable()
         }
     }
 }
