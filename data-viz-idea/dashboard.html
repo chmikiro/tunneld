@@ -159,6 +159,15 @@ function Counter(){let m=new Map();return{add:function(k){m.set(k,(m.get(k)||0)+
 
 let cChart=null,dChart=null,oChart=null,tChart=null;
 
+function daysSpan(){
+  if(ALL.length===0)return '0';
+  let dates=ALL.map(r=>(r[7]||'').slice(0,10)).filter(d=>d).sort();
+  if(dates.length===0)return '0';
+  let first=dates[0],last=dates[dates.length-1];
+  // Count days between first and last
+  let d1=new Date(first),d2=new Date(last);
+  return Math.round((d2-d1)/86400000);
+}
 function updateAll(){
   let fc=filteredCounts();
 
@@ -185,7 +194,7 @@ function updateAll(){
   let dlabs=dall.map(d=>d[0].slice(5)),ddat=dall.map(d=>d[1]);
   if(dChart)dChart.destroy();
   dChart=new Chart(document.getElementById('dailyChart'),{type:'line',data:{labels:dlabs,
-    datasets:[{data:ddat,borderColor:'#58a6ff',backgroundColor:'#58a6ff22',fill:true,pointRadius:ddat.length>30?1:3,tension:.3}]},
+    datasets:[{data:ddat,borderColor:'#58a6ff',backgroundColor:'#58a6ff22',fill:true,borderWidth:1.5,pointRadius:ddat.length>30?2:3,tension:.3}]},
     options:{responsive:true,plugins:{legend:{display:false}},
     onClick:function(evt,els){if(els.length&&filter.type!=='day'){let idx=els[0].index;setFilter('day',dall[idx][0])}},
     scales:{x:{grid:{color:'#21262d'},ticks:{color:'#8b949e',maxTicksLimit:25,font:{size:8}}},y:{grid:{color:'#21262d'},ticks:{color:'#8b949e'}}}}}); 
