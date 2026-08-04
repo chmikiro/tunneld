@@ -30,13 +30,14 @@ canvas{max-height:280px;cursor:pointer}
 input{width:100%;padding:8px 12px;background:#161b22;border:1px solid#30363d;border-radius:6px;color:#c9d1d9;font-size:.8rem;margin-bottom:8px}
 input:focus{outline:none;border-color:#58a6ff}
 .tbl{max-height:45vh;overflow:auto;border:1px solid#30363d;border-radius:6px}
+.tbl table{min-width:650px;white-space:nowrap}
 table{width:100%;border-collapse:collapse;font-size:.76rem}
 th{position:sticky;top:0;background:#1c2128;color:#8b949e;padding:7px 10px;text-align:left;font-weight:500;border-bottom:2px solid#30363d;cursor:pointer}
 th:hover{color:#f0f6fc}
 td{padding:5px 10px;border-bottom:1px solid#21262d}
 tr:hover{background:#161b22}
 .drill{color:#58a6ff;cursor:pointer;text-decoration:underline;font-size:.72rem;display:block;margin-top:2px}
-.upload-zone{border:2px dashed #30363d;border-radius:8px;padding:18px;text-align:center;cursor:pointer;margin-bottom:12px;transition:border-color .15s,background .15s}
+
 .upload-zone:hover,.upload-zone.drag{border-color:#58a6ff;background:#161b22}
 .upload-zone .label{color:#8b949e;font-size:.82rem}
 .upload-zone .hint{color:#484f58;font-size:.68rem;margin-top:3px}
@@ -46,11 +47,8 @@ tr:hover{background:#161b22}
 <h1>🔐 Tunnel'd — Interactive VPN Analytics</h1>
 <div class="meta" id="metaLine">Drop a CSV to replace demo data</div>
 
-<div id="uploadZone" class="upload-zone" onclick="document.getElementById('fileInput').click()">
-  <div class="label">📁 Drop your Tunnel'd CSV export here</div>
-  <div class="hint">Export from Tunnel'd → Settings → Export CSV — or click to browse</div>
-</div>
 <input type="file" id="fileInput" accept=".csv" style="display:none" onchange="loadFile(this.files[0])">
+<button id="uploadBtn" onclick="document.getElementById('fileInput').click()" style="background:#161b22;border:1px solid #30363d;color:#8b949e;padding:8px 16px;border-radius:6px;cursor:pointer;font-size:.78rem;margin-bottom:12px">📁 Load CSV export</button>
 
 <div class="breadcrumb" id="bc"><span onclick="clearFilter()">🌐 All</span></div>
 <div class="grid" id="cards"></div>
@@ -115,16 +113,12 @@ function loadFile(file){
     if(rows.length===0){document.getElementById('metaLine').textContent='⚠️ No valid rows found. Is this a Tunnel\'d CSV export?';return}
     ALL=rows;
     clearFilter();
-    document.getElementById('uploadZone').style.display='none';
+    document.getElementById('uploadBtn').style.display='none';
     document.getElementById('metaLine').textContent='Loaded '+ALL.length+' connections from CSV';
   };
   reader.readAsText(file);
 }
-// Drag-and-drop
-const zone=document.getElementById('uploadZone');
-['dragenter','dragover'].forEach(evt=>{zone.addEventListener(evt,e=>{e.preventDefault();zone.classList.add('drag')})});
-['dragleave','drop'].forEach(evt=>{zone.addEventListener(evt,e=>{e.preventDefault();zone.classList.remove('drag')})});
-zone.addEventListener('drop',e=>{loadFile(e.dataTransfer.files[0])});
+// File picker only — drag/drop removed
 
 // ── Exposed for WebView JS bridge ──
 window.loadTunneldCSV=function(csvString){
@@ -132,7 +126,7 @@ window.loadTunneldCSV=function(csvString){
   if(rows.length===0)return;
   ALL=rows;
   clearFilter();
-  document.getElementById('uploadZone').style.display='none';
+  document.getElementById('uploadBtn').style.display='none';
   document.getElementById('metaLine').textContent='Loaded '+ALL.length+' connections';
 };
 
@@ -171,7 +165,7 @@ function updateAll(){
   // Meta line (computed from actual data, not hardcoded S object)
   document.getElementById('metaLine').textContent=filter.type
     ?'Filtered: '+filtered.length+' / '+ALL.length+' connections'
-    :document.getElementById('uploadZone').style.display==='none'
+    :true  // CSV loaded
       ?'All: '+ALL.length+' connections · '+fc.countries.entries().length+' countries · '+fc.orgs.entries().length+' providers'
       :'Drop a CSV to replace demo data';
 
