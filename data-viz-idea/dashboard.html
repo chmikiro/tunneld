@@ -62,7 +62,7 @@ const ALL = [["193.32.127.220", "Switzerland", "31173 Services AB", "Zurich", "C
 
 // ── CSV parser ──
 function parseCSV(text){
-  const lines=text.trim().split(/\r?\n/);
+  const lines=text.trim().split(/\r?/);
   if(lines.length<2)return[];
   let start=lines[0].startsWith('address')?1:0;
   const rows=[];
@@ -142,7 +142,7 @@ function Counter(){let m=new Map();return{add:function(k){m.set(k,(m.get(k)||0)+
 function filteredCounts(){
   let c=Counter(),o=Counter(),d=Counter(),nt=Counter();
   filtered.forEach(r=>{
-    c.add(r[1]);o.add(r[2]);nt.add(r[6]);
+    c.add(r[1]);o.add(r[2]);nt.add(r[7]);
     let dd=(r[8]||'').slice(0,10);if(dd)d.add(dd);
   });
   let ip=Counter();filtered.forEach(r=>{ip.add(r[6])});return {countries:c,orgs:o,daily:d,networkTypes:nt,ipVersions:ip};
@@ -212,12 +212,15 @@ function updateAll(){
 
   // Cards
   document.getElementById('cards').innerHTML=
+    '<div class="card" onclick="clearFilter()"><div class="v">'+filtered.length+'</div><div class="l">Connections</div></div>'+
     '<div class="card" onclick="clearFilter()"><div class="v">'+fc.countries.entries().length+'</div><div class="l">Countries</div></div>'+
-    '<div class="card"><div class="v">'+fc.orgs.entries().length+'</div><div class="l">Providers</div></div>'+'<div class="card"><div class="v">'+cell+'</div><div class="l">Cellular</div></div>'+'<div class="card"><div class="v">'+fc.ipVersions.get('IPv4')+'</div><div class="l">IPv4</div></div>'+'<div class="card"><div class="v">'+fc.ipVersions.get('IPv6')+'</div><div class="l">IPv6</div></div>'+
+    '<div class="card"><div class="v">'+fc.orgs.entries().length+'</div><div class="l">Providers</div></div>'+
+    '<div class="card"><div class="v">'+daysSpan()+'d</div><div class="l">Day span</div></div>'+
     '<div class="card"><div class="v g">'+vpn+'</div><div class="l">VPN ('+(vpn/total*100).toFixed(1)+'%)</div></div>'+
     '<div class="card"><div class="v r">'+wifi+'</div><div class="l">WiFi ('+(wifi/total*100).toFixed(1)+'%)</div></div>'+
-    '<div class="card"><div class="v">'+daysSpan()+'d</div><div class="l">Day span</div></div>'+
-    '<div class="card"><div class="v">'+filtered.length+'</div><div class="l">Connections</div></div>';
+    '<div class="card"><div class="v">'+cell+'</div><div class="l">Cellular</div></div>'+
+    '<div class="card"><div class="v">'+fc.ipVersions.get('IPv4')+'</div><div class="l">IPv4</div></div>'+
+    '<div class="card"><div class="v">'+fc.ipVersions.get('IPv6')+'</div><div class="l">IPv6</div></div>'
 
   // Titles
   document.getElementById('ctitle').textContent=filter.type==='country'?'Countries → '+filter.value:filter.type==='org'?'Provider: '+filter.value+' — Countries':'Top Countries';
