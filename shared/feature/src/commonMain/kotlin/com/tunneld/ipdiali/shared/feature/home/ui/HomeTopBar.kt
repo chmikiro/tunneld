@@ -11,6 +11,7 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FileDownload
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.Analytics
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -33,6 +34,7 @@ internal fun HomeTopBar(
     onSearch: (String) -> Unit,
     onSettings: () -> Unit,
     onExportCsv: () -> Unit,
+    onDashboard: () -> Unit,
     onFilter: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -66,6 +68,13 @@ internal fun HomeTopBar(
             contentColor = MaterialTheme.colorScheme.onSurface,
         ) {
             Icon(Icons.Filled.FileDownload, null)
+        }
+        TopBarIconButton(
+            onClick = onDashboard,
+            containerColor = MaterialTheme.colorScheme.surfaceContainerHighest,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+        ) {
+            Icon(Icons.Outlined.Analytics, null)
         }
     }
 }

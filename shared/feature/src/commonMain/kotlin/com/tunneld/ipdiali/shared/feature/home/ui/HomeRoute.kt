@@ -14,6 +14,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun HomeRoute(
     onSettings: () -> Unit,
     onExportCsv: (csvContent: String) -> Unit,
+    onDashboard: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val viewModel: HomeViewModel = koinViewModel()

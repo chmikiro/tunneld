@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.tunneld.ipdiali.feature.background.ui.RunInBackgroundRoute
 import com.tunneld.ipdiali.shared.core.navigation.forwardBackwardComposable
+import com.tunneld.ipdiali.shared.feature.dashboard.ui.DashboardRoute
 import com.tunneld.ipdiali.shared.feature.notifications.ui.NotificationsRoute
 import com.tunneld.ipdiali.shared.feature.settings.ui.SettingsRoute
 
@@ -53,6 +54,11 @@ internal fun AppNavHost(
                 onBack = { navController.popBackStack(Route.Notifications.name, inclusive = true) }
             )
         }
+        forwardBackwardComposable(Route.Dashboard.name) {
+            DashboardRoute(
+                onBack = { navController.popBackStack(Route.Dashboard.name, inclusive = true) }
+            )
+        }
     }
 }
 
@@ -61,4 +67,5 @@ private enum class Route {
     Settings,
     Background,
     Notifications,
+    Dashboard,
 }
