@@ -1,8 +1,6 @@
 # Tunnel'd
 
-Android app that logs your IP address changes, tests for DNS leaks, and exports your connection history.
-
-Inspired by [Find My IP](https://github.com/maksimowiczm/find-my-ip) by Mateusz Maksimowicz.
+Android app that **locally** tracks IP address changes, performs DNS leak tests, and includes JSON/CSV backup & restore. Future features include dynamic in-app analytics, WebRTC leak testing, device identity leak detection, in-app APK/link scanning against antivirus providers, and optional AI-powered personalized reports (API keys optional). Built **without** _**bloated frameworks**_, prioritizing fully **FOSS**, **auditable**, and **reproducible** solutions.
 
 
 <img width="3808" height="3808" alt="Cleaned_2026_4tunneld
@@ -59,6 +57,11 @@ The app uses around 20-25 MB of memory, with no leaked UI components and healthy
 Requires JDK 21 and Android SDK 35+.
 
 Signing: drop your keystore at the project root as `findmyip-release.keystore` (alias/key/password: `findmyip`) or update `opensource/composeApp/build.gradle.kts`.
+
+
+## Acknowledgment
+
+- [Mateusz Maksimowicz](https://github.com/maksimowiczm/find-my-ip)
 
 
 ## License
