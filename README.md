@@ -20,7 +20,7 @@ https://github.com/chmikiro/tunneld/tree/main865_Privacy" src="https://github.co
 - Filters history by IP version (v4/v6), network type (Wi-Fi/Cellular/VPN), and country (partial, case-insensitive)
 - Exports filtered history to CSV `(address, version, network_type, country, country_code, city, isp, org, timezone, latitude, longitude, timestamp)`
 - Import/restore previously exported history
-- Visualize your activity through dynamic analytics leveraging key fields, as lis451165ted above (expected for next release. 100% local)
+- Visualize your activity through dynamic analytics leveraging key fields, as listed above (expected for next release. 100% local)
 - WebRTC leak test without delegation. This is useful for users of VPN, proxy, etc. (future release)
 - Option to use our servers for IP Logging including, respectively GeoIP and IP identification (future release)
 - And much more, with always the intention to keep this lightweight on both client and server side: read more about our [DNS Leak Test architecture](https://leak.ipdia.li)
