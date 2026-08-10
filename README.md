@@ -11,17 +11,36 @@ https://github.com/chmikiro/tunneld/tree/main865_Privacy" src="https://github.co
 
 ## What it does
 
-- Shows your current IPv4 and IPv6 address with geolocation (country, city, ISP, ASN org) – Pick one of the 3 providers in settings
-- Keeps a searchable history of past IP addresses
-- Runs in the background with periodic refresh and notifications on IP change
-- DNS leak test: checks which DNS servers your device is actually using – Please note that this service is delivered by us, you can find the web version on [ipdia.li](https://ipdia.li)
-- Filters history by IP version (v4/v6), network type (Wi-Fi/Cellular/VPN), and country (partial, case-insensitive)
-- Exports filtered history to CSV `(address, version, network_type, country, country_code, city, isp, org, timezone, latitude, longitude, timestamp)`
-- Import/restore previously exported history
-- Visualize your activity through dynamic analytics leveraging key fields, as listed above (expected for next release. 100% local)
-- WebRTC leak test without delegation. This is useful for users of VPN, proxy, etc. (future release)
-- Option to use our servers for IP Logging including, respectively GeoIP and IP identification (future release)
-- And much more, with always the intention to keep this lightweight on both client and server side: read more about our [DNS Leak Test architecture](https://leak.ipdia.li)
+### Core IP & Tracking Features
+
+| Feature | Description | Status |
+| :--- | :--- | :--- |
+| **IP & Geolocation Display** | Shows current IPv4 and IPv6 address with geolocation data (country, city, ISP, ASN org). Users can pick one of 3 providers in settings. | Current |
+| **Background Monitoring** | Runs in the background with periodic refresh and sends notifications upon IP change. | Current |
+| **Lightweight Architecture** | Designed to remain lightweight on both the client and server side. | Current |
+
+### History & Data Management
+
+| Feature | Description | Status |
+| :--- | :--- | :--- |
+| **Searchable History** | Keeps a fully searchable history of past IP addresses. | Current |
+| **Advanced Filtering** | Filters history by IP version (v4/v6), network type (Wi-Fi/Cellular/VPN), and country (partial, case-insensitive). | Current |
+| **CSV Export** | Exports filtered history to CSV (includes address, version, network_type, country, country_code, city, isp, org, timezone, latitude, longitude, timestamp). | Current |
+| **Import & Restore** | Import and restore previously exported history files. | Current |
+
+### Security & Leak Tests
+
+| Feature | Description | Status |
+| :--- | :--- | :--- |
+| **DNS Leak Test** | Checks which DNS servers your device is actually using. Delivered natively by us (web version available on ipdia.li). | Current |
+| **WebRTC Leak Test** | Conducts WebRTC leak tests without delegation. Highly useful for users of VPNs, proxies, etc. | Future Release |
+
+## Upcoming Analytics & Server Features
+
+| Feature | Description | Status |
+| :--- | :--- | :--- |
+| **Dynamic Analytics** | Visualize your activity through dynamic analytics leveraging key data fields (100% local processing). | Next Release |
+| **Native IP Logging** | Option to use our servers for IP Logging, including GeoIP and IP identification. | Future Release |
 
 
 ## Why Tunnel'd
