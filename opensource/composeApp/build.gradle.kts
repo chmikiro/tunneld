@@ -1,5 +1,6 @@
 @file:OptIn(ExperimentalComposeLibrary::class)
 
+import java.util.Properties
 import org.jetbrains.compose.ExperimentalComposeLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -13,6 +14,12 @@ plugins {
     alias(libs.plugins.gmazzo.buildconfig)
     alias(libs.plugins.ksp)
     alias(libs.plugins.room)
+}
+
+// Signing credentials loaded from local.properties (not committed to git)
+val localProperties = Properties().apply {
+    val localFile = rootProject.file("local.properties")
+    if (localFile.exists()) load(localFile.inputStream())
 }
 
 buildConfig {
@@ -110,10 +117,11 @@ android {
     }
     signingConfigs {
         create("release") {
-            storeFile = rootProject.file("findmyip-release.keystore")
-            storePassword = "findmyip"
-            keyAlias = "findmyip"
-            keyPassword = "findmyip"
+            storeFile = localProperties.getProperty("signing.storeFile")?.let { file(it) }
+                ?: rootProject.file("findmyip-release.keystore")
+            storePassword = localProperties.getProperty("signing.storePassword") ?: "findmyip"
+            keyAlias = localProperties.getProperty("signing.keyAlias") ?: "findmyip"
+            keyPassword = localProperties.getProperty("signing.keyPassword") ?: storePassword
         }
     }
     packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
