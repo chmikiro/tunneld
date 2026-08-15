@@ -25,7 +25,7 @@ private enum class Tab(
 }
 
 @Composable
-internal fun MainScreen(onSettings: () -> Unit, onExportCsv: (String) -> Unit) {
+internal fun MainScreen(onSettings: () -> Unit, onExportCsv: (String) -> Unit, onDashboard: () -> Unit = {}) {
     var selectedTab by remember { mutableStateOf(Tab.IpLogger) }
 
     Scaffold(
@@ -66,7 +66,7 @@ internal fun MainScreen(onSettings: () -> Unit, onExportCsv: (String) -> Unit) {
         when (selectedTab) {
             Tab.IpLogger -> HomeRoute(
                 onSettings = onSettings,
-                onExportCsv = onExportCsv,
+                onDashboard = onDashboard,
                 modifier = Modifier.padding(padding),
             )
             Tab.DnsLeak -> DnsLeakScreen(

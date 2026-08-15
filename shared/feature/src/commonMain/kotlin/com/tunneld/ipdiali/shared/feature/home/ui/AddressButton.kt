@@ -75,6 +75,7 @@ internal fun AddressButton(
     modifier: Modifier = Modifier,
     shapes: ButtonShapes = AddressButtonDefaults.singleShapes(),
     showFullEnrichment: Boolean = false,
+    showNetworkType: Boolean = true,
     compact: Boolean = false,
 ) {
     val dateFormatter = LocalDateFormatter.current
@@ -123,12 +124,14 @@ internal fun AddressButton(
                     )
                 }
                 Spacer(Modifier.weight(1f))
-                model.networkType.Icon()
-                Spacer(Modifier.width(8.dp))
-                Text(
-                    text = model.networkType.stringResource(),
-                    style = MaterialTheme.typography.bodyMedium,
-                )
+                if (showNetworkType) {
+                    model.networkType.Icon()
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        text = model.networkType.stringResource(),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
             }
             Text(
                 text = model.address,

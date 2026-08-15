@@ -14,12 +14,11 @@ interface AddressHistoryDao {
         SELECT * 
         FROM AddressHistory
         WHERE
-            (:query IS NULL OR address LIKE '%' || :query || '%') AND
+            (:query IS NULL OR address LIKE '%' || :query || '%' OR LOWER(country) LIKE '%' || LOWER(:query) || '%') AND
             (
                 (addressVersion = CASE WHEN :ipv4 THEN ${AddressVersionSQLConstants.IPV4} ELSE -1 END) OR
                 (addressVersion = CASE WHEN :ipv6 THEN ${AddressVersionSQLConstants.IPV6} ELSE -1 END)
             ) AND
-            (:country IS NULL OR LOWER(country) LIKE '%' || LOWER(:country) || '%') AND
             (
                 (:wifi = 0 AND :cellular = 0 AND :vpn = 0 AND :unknown = 0) OR
                 (:wifi = 1 AND networkType = 'wifi') OR
@@ -34,7 +33,6 @@ interface AddressHistoryDao {
         query: String?,
         ipv4: Boolean,
         ipv6: Boolean,
-        country: String?,
         wifi: Boolean = false,
         cellular: Boolean = false,
         vpn: Boolean = false,
@@ -55,12 +53,11 @@ interface AddressHistoryDao {
         SELECT * 
         FROM AddressHistory
         WHERE
-            (:query IS NULL OR address LIKE '%' || :query || '%') AND
+            (:query IS NULL OR address LIKE '%' || :query || '%' OR LOWER(country) LIKE '%' || LOWER(:query) || '%') AND
             (
                 (addressVersion = CASE WHEN :ipv4 THEN ${AddressVersionSQLConstants.IPV4} ELSE -1 END) OR
                 (addressVersion = CASE WHEN :ipv6 THEN ${AddressVersionSQLConstants.IPV6} ELSE -1 END)
             ) AND
-            (:country IS NULL OR LOWER(country) LIKE '%' || LOWER(:country) || '%') AND
             (
                 (:wifi = 0 AND :cellular = 0 AND :vpn = 0 AND :unknown = 0) OR
                 (:wifi = 1 AND networkType = 'wifi') OR
@@ -76,7 +73,6 @@ interface AddressHistoryDao {
         query: String?,
         ipv4: Boolean,
         ipv6: Boolean,
-        country: String?,
         wifi: Boolean = false,
         cellular: Boolean = false,
         vpn: Boolean = false,

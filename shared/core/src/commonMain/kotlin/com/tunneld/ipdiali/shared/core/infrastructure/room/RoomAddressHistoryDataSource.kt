@@ -25,7 +25,6 @@ class RoomAddressHistoryDataSource(
         query: String?,
         ipv4: Boolean,
         ipv6: Boolean,
-        country: String?,
         networkTypes: Set<DomainNetworkType>,
     ): Flow<PagingData<AddressHistory>> =
         Pager(
@@ -35,7 +34,6 @@ class RoomAddressHistoryDataSource(
                         query = query,
                         ipv4 = ipv4,
                         ipv6 = ipv6,
-                        country = country,
                         wifi = networkTypes.contains(DomainNetworkType.WiFi),
                         cellular = networkTypes.contains(DomainNetworkType.Cellular),
                         vpn = networkTypes.contains(DomainNetworkType.VPN),
@@ -62,14 +60,12 @@ class RoomAddressHistoryDataSource(
         query: String?,
         ipv4: Boolean,
         ipv6: Boolean,
-        country: String?,
         networkTypes: Set<DomainNetworkType>,
     ): List<AddressHistory> =
         dao.getFilteredList(
                 query = query,
                 ipv4 = ipv4,
                 ipv6 = ipv6,
-                country = country,
                 wifi = networkTypes.contains(DomainNetworkType.WiFi),
                 cellular = networkTypes.contains(DomainNetworkType.Cellular),
                 vpn = networkTypes.contains(DomainNetworkType.VPN),

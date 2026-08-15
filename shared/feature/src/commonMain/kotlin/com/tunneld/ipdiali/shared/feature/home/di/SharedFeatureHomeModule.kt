@@ -15,6 +15,7 @@ val sharedFeatureHomeModule = module {
             get(named(InternetProtocolVersion.IPV4)),
             get(named(InternetProtocolVersion.IPV6)),
             get(),
+            get(),
         )
     }
 }

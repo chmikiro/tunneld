@@ -12,21 +12,18 @@ import com.tunneld.ipdiali.shared.core.domain.AddressHistory
 import com.tunneld.ipdiali.shared.core.domain.Ip4Address
 import com.tunneld.ipdiali.shared.core.domain.Ip6Address
 import com.tunneld.ipdiali.shared.core.domain.IpInfo
+import com.tunneld.ipdiali.shared.core.application.usecase.LookupExternalIpUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 internal class HomeViewModel(
     observeHistoryUseCase: ObserveAddressHistoryUseCase,
@@ -35,6 +32,7 @@ internal class HomeViewModel(
     private val refreshIp4AddressUseCase: RefreshAddressUseCase,
     private val refreshIp6AddressUseCase: RefreshAddressUseCase,
     private val exportAddressHistoryUseCase: ExportAddressHistoryUseCase,
+    private val lookupExternalIpUseCase: LookupExternalIpUseCase,
 ) : ViewModel() {
 
     private val _isRefreshing = MutableStateFlow(false)
@@ -67,32 +65,23 @@ internal class HomeViewModel(
         _filter.value = newFilter
     }
 
-    private val _searchQuery =
-        MutableSharedFlow<String?>(replay = 1).apply { runBlocking { emit(null) } }
-    val searchQuery = _searchQuery.asSharedFlow()
-
-    fun search(query: String?) {
-        viewModelScope.launch { _searchQuery.emit(query) }
-    }
-
     @OptIn(ExperimentalCoroutinesApi::class)
     val history =
-        combine(filter, searchQuery) { filter, query ->
+        filter
+            .flatMapLatest { filter ->
                 observeHistoryUseCase
                     .observe(
-                        query = query,
+                        query = filter.query,
                         ipv4 =
                             filter.protocols.contains(InternetProtocolVersion.IPV4) ||
                                 filter.protocols.isEmpty(),
                         ipv6 =
                             filter.protocols.contains(InternetProtocolVersion.IPV6) ||
                                 filter.protocols.isEmpty(),
-                        country = filter.country,
                         networkTypes = filter.networkTypes,
                     )
                     .map { data -> data.map(::AddressHistoryUiModel) }
             }
-            .flatMapLatest { it }
             .cachedIn(viewModelScope)
 
     init {
@@ -124,10 +113,9 @@ internal class HomeViewModel(
     suspend fun exportToCsv(): String {
         val f = _filter.value
         val results = exportAddressHistoryUseCase.export(
-            query = null,
+            query = f.query,
             ipv4 = f.protocols.contains(InternetProtocolVersion.IPV4) || f.protocols.isEmpty(),
             ipv6 = f.protocols.contains(InternetProtocolVersion.IPV6) || f.protocols.isEmpty(),
-            country = f.country,
             networkTypes = f.networkTypes,
         )
 
@@ -163,6 +151,9 @@ internal class HomeViewModel(
         }
         return sb.toString()
     }
+
+    suspend fun lookupExternalIp(ip: String): IpInfo? =
+        lookupExternalIpUseCase.lookup(ip)
 
     companion object {
         private const val REFRESH_DELAY_MS = 1000L

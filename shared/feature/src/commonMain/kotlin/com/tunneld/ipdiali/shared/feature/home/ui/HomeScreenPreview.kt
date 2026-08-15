@@ -115,10 +115,9 @@ fun HomeScreenPreview() {
             filter = Filter(setOf()),
             isRefreshing = false,
             onRefresh = {},
-            onSearch = {},
             onSettings = {},
             onFilterUpdate = {},
-            onExportCsv = {},
+            onLookup = { null },
         )
     }
 }

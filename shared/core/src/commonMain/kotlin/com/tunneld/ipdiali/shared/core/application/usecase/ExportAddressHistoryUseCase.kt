@@ -9,7 +9,6 @@ interface ExportAddressHistoryUseCase {
         query: String?,
         ipv4: Boolean,
         ipv6: Boolean,
-        country: String?,
         networkTypes: Set<NetworkType>,
     ): List<AddressHistory>
 }
@@ -21,14 +20,12 @@ internal class ExportAddressHistoryUseCaseImpl(
         query: String?,
         ipv4: Boolean,
         ipv6: Boolean,
-        country: String?,
         networkTypes: Set<NetworkType>,
     ): List<AddressHistory> =
         dataSource.getExportList(
             query = query,
             ipv4 = ipv4,
             ipv6 = ipv6,
-            country = country,
             networkTypes = networkTypes,
         )
 }

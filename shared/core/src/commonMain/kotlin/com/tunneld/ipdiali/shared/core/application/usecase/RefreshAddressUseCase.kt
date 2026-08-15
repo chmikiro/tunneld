@@ -13,6 +13,7 @@ import com.tunneld.ipdiali.shared.core.domain.AddressStatus
 import com.tunneld.ipdiali.shared.core.domain.IpAddress
 import com.tunneld.ipdiali.shared.core.domain.IpInfo
 
+import com.tunneld.ipdiali.shared.core.application.infrastructure.widget.WidgetUpdateHook
 import com.tunneld.ipdiali.shared.core.infrastructure.ipapi.GeoIpDataSource
 
 data class RefreshAddressError(val message: String?)
@@ -29,6 +30,7 @@ internal class RefreshAddressUseCaseImpl<A : IpAddress>(
     private val dnsService: DnsService,
     private val networkTypeObserver: NetworkTypeObserver,
     private val geoIpDataSource: GeoIpDataSource,
+    private val widgetUpdateHook: WidgetUpdateHook,
     private val logger: Logger,
 ) : RefreshAddressUseCase {
     override suspend fun refresh(): Result<Unit, RefreshAddressError> {
@@ -55,6 +57,7 @@ internal class RefreshAddressUseCaseImpl<A : IpAddress>(
                 dateTime = now,
                 ipInfo = ipInfo,
             )
+            widgetUpdateHook.onIpUpdated(currentAddress.stringRepresentation(), ipInfo)
             Ok(Unit)
         } catch (e: Exception) {
             logger.e(TAG, e) { "Failed to refresh current IP address" }

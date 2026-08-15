@@ -11,7 +11,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material3.ContainedLoadingIndicator
@@ -35,7 +34,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -46,21 +44,18 @@ import com.tunneld.ipdiali.shared.core.feature.ui.LocalClipboardManager
 import com.tunneld.ipdiali.shared.feature.home.persentation.AddressUiModel
 import com.tunneld.ipdiali.shared.feature.home.persentation.AddressHistoryUiModel
 import com.tunneld.ipdiali.shared.feature.home.persentation.CurrentAddressUiModel
+import com.tunneld.ipdiali.shared.core.domain.IpInfo
 import com.tunneld.ipdiali.shared.feature.home.persentation.Filter
 import com.tunneld.ipdiali.shared.feature.home.persentation.isAvailable
 import tunneld.composeapp.generated.resources.Res
 import tunneld.composeapp.generated.resources.headline_current
 import tunneld.composeapp.generated.resources.headline_history
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(
     ExperimentalMaterial3Api::class,
     ExperimentalMaterial3ExpressiveApi::class,
-    FlowPreview::class,
 )
 @Composable
 internal fun HomeScreen(
@@ -70,10 +65,10 @@ internal fun HomeScreen(
     filter: Filter,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
-    onSearch: (String) -> Unit,
     onSettings: () -> Unit,
     onFilterUpdate: (Filter) -> Unit,
-    onExportCsv: () -> Unit,
+    onDashboard: () -> Unit = {},
+    onLookup: suspend (String) -> IpInfo? = { null },
     modifier: Modifier = Modifier,
 ) {
     val clipboardManager = LocalClipboardManager.current
@@ -82,6 +77,7 @@ internal fun HomeScreen(
     val scope = rememberCoroutineScope()
 
     var showFilters by rememberSaveable { mutableStateOf(false) }
+    var showLookupModal by rememberSaveable { mutableStateOf(false) }
     var detailModel by remember { mutableStateOf<AddressUiModel?>(null) }
 
     if (showFilters) {
@@ -89,6 +85,17 @@ internal fun HomeScreen(
             filter = filter,
             onDismiss = { showFilters = false },
             onUpdateFilter = onFilterUpdate,
+        )
+    }
+
+    if (showLookupModal) {
+        LookupExternalIpModal(
+            onDismiss = { showLookupModal = false },
+            lookupIp = onLookup,
+            onCopyIp = {
+                clipboardManager.copyToClipboard(it)
+                scope.launch { snackbarHostState.showSnackbar("Copied to clipboard") }
+            },
         )
     }
 
@@ -103,24 +110,16 @@ internal fun HomeScreen(
         )
     }
 
-    val searchTextState = rememberTextFieldState()
-    LaunchedEffect(searchTextState, onSearch) {
-        snapshotFlow { searchTextState.text }
-            .debounce(100)
-            .collectLatest { onSearch(it.toString()) }
-    }
-
     Scaffold(
         modifier = modifier,
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             HomeTopBar(
                 filter = filter,
-                searchTextState = searchTextState,
-                onSearch = onSearch,
                 onSettings = onSettings,
-                onExportCsv = onExportCsv,
+                onDashboard = onDashboard,
                 onFilter = { showFilters = true },
+                onLookup = { showLookupModal = true },
             )
         },
     ) { paddingValues ->

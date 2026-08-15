@@ -54,3 +54,8 @@ kotlin {
         }
     }
 }
+
+compose.resources {
+    packageOfResClass = "tunneld.shared.feature.generated.resources"
+    generateResClass = always
+}

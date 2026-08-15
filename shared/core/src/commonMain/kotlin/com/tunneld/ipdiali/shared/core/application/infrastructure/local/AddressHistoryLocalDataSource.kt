@@ -10,7 +10,6 @@ interface AddressHistoryLocalDataSource {
         query: String?,
         ipv4: Boolean,
         ipv6: Boolean,
-        country: String? = null,
         networkTypes: Set<NetworkType> = emptySet(),
     ): Flow<PagingData<AddressHistory>>
 
@@ -24,7 +23,6 @@ interface AddressHistoryLocalDataSource {
         query: String?,
         ipv4: Boolean,
         ipv6: Boolean,
-        country: String? = null,
         networkTypes: Set<NetworkType> = emptySet(),
     ): List<AddressHistory>
 

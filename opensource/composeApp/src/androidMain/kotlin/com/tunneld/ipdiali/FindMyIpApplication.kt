@@ -16,7 +16,6 @@ class FindMyIpApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
         initKoin(coroutineScope) { androidContext(this@FindMyIpApplication) }
     }
 }

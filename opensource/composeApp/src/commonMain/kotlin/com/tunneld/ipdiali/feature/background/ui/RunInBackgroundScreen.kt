@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Bolt
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Icon
@@ -38,7 +40,9 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 internal fun RunInBackgroundScreen(
     onBack: () -> Unit,
     periodicRefreshRunning: Boolean,
+    realTimeMonitorRunning: Boolean,
     onTogglePeriodicRefresh: (Boolean) -> Unit,
+    onToggleRealTimeMonitor: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -65,13 +69,39 @@ internal fun RunInBackgroundScreen(
                     modifier =
                         Modifier.clickable { onTogglePeriodicRefresh(!periodicRefreshRunning) },
                     supportingContent = {
-                        Text(stringResource(Res.string.description_periodic_refresh))
+                        Text("Run periodically in the background")
                     },
                     leadingContent = {
-                        Icon(painterResource(Res.drawable.ic_clock_loader_20), null)
+                        Icon(Icons.Outlined.Schedule, null)
                     },
                     trailingContent = {
                         Switch(checked = periodicRefreshRunning, onCheckedChange = null)
+                    },
+                )
+            }
+            item {
+                ListItem(
+                    headlineContent = {
+                        Text("Real-time detection*")
+                    },
+                    modifier =
+                        Modifier.clickable { onToggleRealTimeMonitor(!realTimeMonitorRunning) },
+                    supportingContent = {
+                        Column {
+                            Text("Detects IP changes instantly when networks switch. Consumes more battery")
+                            Text(
+                                "*A persistent notification is mandatory to keep the service alive",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(top = 4.dp),
+                            )
+                        }
+                    },
+                    leadingContent = {
+                        Icon(Icons.Outlined.Bolt, null)
+                    },
+                    trailingContent = {
+                        Switch(checked = realTimeMonitorRunning, onCheckedChange = null)
                     },
                 )
             }
@@ -87,7 +117,9 @@ private fun RunInBackgroundScreenPreview() {
         RunInBackgroundScreen(
             onBack = {},
             periodicRefreshRunning = true,
+            realTimeMonitorRunning = false,
             onTogglePeriodicRefresh = {},
+            onToggleRealTimeMonitor = {},
         )
     }
 }

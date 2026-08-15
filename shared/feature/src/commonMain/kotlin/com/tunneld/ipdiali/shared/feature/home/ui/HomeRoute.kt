@@ -8,12 +8,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.tunneld.ipdiali.shared.feature.home.persentation.HomeViewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeRoute(
     onSettings: () -> Unit,
-    onExportCsv: (csvContent: String) -> Unit,
+    onDashboard: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val viewModel: HomeViewModel = koinViewModel()
@@ -32,15 +34,10 @@ fun HomeRoute(
         filter = filter,
         isRefreshing = isRefreshing,
         onRefresh = viewModel::refresh,
-        onSearch = viewModel::search,
         onSettings = onSettings,
         onFilterUpdate = viewModel::updateFilter,
-        onExportCsv = {
-            scope.launch {
-                val csv = viewModel.exportToCsv()
-                onExportCsv(csv)
-            }
-        },
+        onDashboard = onDashboard,
+        onLookup = { ip -> withContext(Dispatchers.IO) { viewModel.lookupExternalIp(ip) } },
         modifier = modifier,
     )
 }
