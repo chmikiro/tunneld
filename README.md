@@ -59,7 +59,7 @@ The app uses around 20-25 MB of memory, with no leaked UI components and healthy
 
 
 ## VT Scan Report
-- No false positives on [Virus Total](https://www.virustotal.com/gui/file/1d453b95aaba207860a2d9355fca191e76af3b482c5da92ec41214b42fc20817/behavior)
+- No false positives on [Virus Total](https://www.virustotal.com/gui/file-analysis/YTkwZGUwNGFiYzhiMGM2MzBkZmI2OWY5MjM1MmQ1ZDM6MTc4Njc5NzQ0MQ==/detection)
 
 
 ## Get it
