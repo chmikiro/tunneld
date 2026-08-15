@@ -78,6 +78,8 @@ internal fun HomeScreen(
 
     var showFilters by rememberSaveable { mutableStateOf(false) }
     var showLookupModal by rememberSaveable { mutableStateOf(false) }
+    var showVtModal by rememberSaveable { mutableStateOf(false) }
+    var vtModalIp by remember { mutableStateOf("") }
     var detailModel by remember { mutableStateOf<AddressUiModel?>(null) }
 
     if (showFilters) {
@@ -96,6 +98,13 @@ internal fun HomeScreen(
                 clipboardManager.copyToClipboard(it)
                 scope.launch { snackbarHostState.showSnackbar("Copied to clipboard") }
             },
+        )
+    }
+
+    if (showVtModal) {
+        VtLookupModal(
+            onDismiss = { showVtModal = false },
+            initialIp = vtModalIp,
         )
     }
 
@@ -120,6 +129,10 @@ internal fun HomeScreen(
                 onDashboard = onDashboard,
                 onFilter = { showFilters = true },
                 onLookup = { showLookupModal = true },
+                onVtLookup = {
+                    showVtModal = true
+                    vtModalIp = ""
+                },
             )
         },
     ) { paddingValues ->
@@ -158,6 +171,10 @@ internal fun HomeScreen(
                         AddressButton(
                             model = ip4,
                             onClick = { detailModel = ip4 },
+                            onVtScan = {
+                                showVtModal = true
+                                vtModalIp = ip4.address
+                            },
                             containerColor = MaterialTheme.colorScheme.primaryContainer,
                             contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier.padding(bottom = 2.dp),

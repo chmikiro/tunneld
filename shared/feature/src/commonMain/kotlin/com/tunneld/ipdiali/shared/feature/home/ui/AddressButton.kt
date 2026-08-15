@@ -32,6 +32,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.BugReport
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -77,6 +81,7 @@ internal fun AddressButton(
     showFullEnrichment: Boolean = false,
     showNetworkType: Boolean = true,
     compact: Boolean = false,
+    onVtScan: (() -> Unit)? = null,
 ) {
     val dateFormatter = LocalDateFormatter.current
 
@@ -181,6 +186,20 @@ internal fun AddressButton(
                                 overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier.weight(1f, fill = false),
                             )
+                        }
+                        if (onVtScan != null) {
+                            Spacer(Modifier.width(6.dp))
+                            IconButton(
+                                onClick = onVtScan,
+                                modifier = Modifier.size(20.dp),
+                            ) {
+                                Icon(
+                                    Icons.Outlined.BugReport,
+                                    contentDescription = "Scan with VirusTotal",
+                                    tint = contentColor.copy(alpha = 0.5f),
+                                    modifier = Modifier.size(16.dp),
+                                )
+                            }
                         }
                     }
                 } else {

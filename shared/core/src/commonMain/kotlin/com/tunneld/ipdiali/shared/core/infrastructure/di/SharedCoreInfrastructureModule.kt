@@ -18,6 +18,9 @@ import com.tunneld.ipdiali.shared.core.infrastructure.date.DateProviderImpl
 import com.tunneld.ipdiali.shared.core.infrastructure.fake.FakeAddressDataSource
 import com.tunneld.ipdiali.shared.core.infrastructure.inmemory.InMemoryIpAddressDataSource
 import com.tunneld.ipdiali.shared.core.infrastructure.ipapi.DataStoreGeoIpPreferences
+import com.tunneld.ipdiali.shared.core.infrastructure.ipapi.VtApiKeyPreferences
+import com.tunneld.ipdiali.shared.core.infrastructure.virustotal.KtorVtIpLookup
+import com.tunneld.ipdiali.shared.core.infrastructure.virustotal.VtIpLookup
 import com.tunneld.ipdiali.shared.core.infrastructure.ipapi.GeoIpDataSource
 import com.tunneld.ipdiali.shared.core.infrastructure.ipapi.GeoIpPreferences
 import com.tunneld.ipdiali.shared.core.infrastructure.ipapi.GeoIpProvider
@@ -80,7 +83,9 @@ private fun Module.ipifyModule() {
         .bind<IpAddressRemoteDataSource<Ip6Address>>()
 
     // Geolocation preferences (DataStore-backed)
-    singleOf(::DataStoreGeoIpPreferences).bind<GeoIpPreferences>()
+    single { DataStoreGeoIpPreferences(get()) }
+    single<VtApiKeyPreferences> { get<DataStoreGeoIpPreferences>() }
+    single<GeoIpPreferences> { get<DataStoreGeoIpPreferences>() }
 
     // Geolocation providers
     single { Ip2LocationProvider(httpClient = get(named("ipifyClient"))) }
@@ -95,6 +100,9 @@ private fun Module.ipifyModule() {
             get<IpInfoProvider>(),
         )
     }
+
+    // VirusTotal IP lookup
+    single<VtIpLookup> { KtorVtIpLookup(httpClient = get(named("ipifyClient"))) }
 
     // Unified geolocation data source
     single {

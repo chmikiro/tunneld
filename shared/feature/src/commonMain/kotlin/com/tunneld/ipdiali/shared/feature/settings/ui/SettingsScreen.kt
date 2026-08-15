@@ -19,6 +19,7 @@ import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.FileUpload
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.TravelExplore
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,6 +37,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,14 +49,13 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.material.icons.outlined.Code
-import androidx.compose.material.icons.outlined.Fingerprint
 import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.PrivacyTip
 import com.tunneld.ipdiali.shared.core.feature.ui.ArrowBackIconButton
 import com.tunneld.ipdiali.shared.core.feature.ui.ThemeState
+import com.tunneld.ipdiali.shared.core.infrastructure.ipapi.VtApiKeyPreferences
 import com.tunneld.ipdiali.shared.core.domain.ThemeMode
 import com.tunneld.ipdiali.shared.core.application.usecase.ClearHistoryUseCase
 import kotlinx.coroutines.launch
@@ -77,6 +78,7 @@ internal fun SettingsScreen(
     var showDataSourceDialog by remember { mutableStateOf(false) }
     var showClearDialog by remember { mutableStateOf(false) }
     var showThemeDialog by remember { mutableStateOf(false) }
+    var showVtKeyDialog by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val clearHistoryUseCase: ClearHistoryUseCase = koinInject()
     val uriHandler = LocalUriHandler.current
@@ -144,6 +146,14 @@ internal fun SettingsScreen(
                     modifier = Modifier.heightIn(min = 68.dp).clickable { onImportCsv() },
                     leadingContent = { Icon(Icons.Outlined.FileUpload, null) },
                     supportingContent = { Text("Import previously exported history") },
+                )
+            }
+            item {
+                ListItem(
+                    headlineContent = { Text("VirusTotal API Key") },
+                    modifier = Modifier.heightIn(min = 68.dp).clickable { showVtKeyDialog = true },
+                    leadingContent = { Icon(Icons.Outlined.BugReport, null) },
+                    supportingContent = { Text("Used for IP reputation lookups") },
                 )
             }
 
@@ -220,19 +230,6 @@ internal fun SettingsScreen(
                     headlineContent = { Text("License") },
                     supportingContent = { Text("GPL-3.0") },
                     leadingContent = { Icon(Icons.Outlined.Gavel, null) },
-                )
-            }
-            item {
-                ListItem(
-                    headlineContent = { Text("Signing key fingerprint (SHA-256)") },
-                    supportingContent = {
-                        Text(
-                            "FC:FC:36:A3:0A:87:AA:FA:3D:72:8B:C9:5A:48:EF:D1:51:5C:64:44:1E:64:E4:17:4E:DF:A4:E2:7B:3D:39:C6",
-                            style = MaterialTheme.typography.labelSmall,
-                            fontFamily = FontFamily.Monospace,
-                        )
-                    },
-                    leadingContent = { Icon(Icons.Outlined.Fingerprint, null) },
                 )
             }
         }
@@ -317,6 +314,12 @@ internal fun SettingsScreen(
             },
         )
     }
+
+    if (showVtKeyDialog) {
+        VtApiKeyDialog(
+            onDismiss = { showVtKeyDialog = false },
+        )
+    }
 }
 
 @Composable
@@ -328,6 +331,51 @@ private fun SettingsSectionHeader(title: String) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 12.dp),
+    )
+}
+
+@Composable
+private fun VtApiKeyDialog(onDismiss: () -> Unit) {
+    val preferences: VtApiKeyPreferences = koinInject()
+    var key by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(Unit) {
+        key = preferences.getVtApiKey() ?: ""
+    }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("VirusTotal API Key") },
+        text = {
+            Column {
+                Text(
+                    "Enter your VirusTotal API key. You can get one at virustotal.com.",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Spacer(Modifier.height(12.dp))
+                OutlinedTextField(
+                    value = key,
+                    onValueChange = { key = it },
+                    label = { Text("API Key") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = {
+                scope.launch {
+                    preferences.setVtApiKey(key.ifBlank { null })
+                }
+                onDismiss()
+            }) {
+                Text("Save")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        },
     )
 }
 
