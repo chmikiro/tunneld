@@ -13,6 +13,7 @@ import com.tunneld.ipdiali.shared.feature.settings.ui.SettingsRoute
 internal fun AppNavHost(
     onExportCsv: (csvContent: String) -> Unit,
     onImportCsv: () -> Unit,
+    dashboardComposable: @Composable (onBack: () -> Unit) -> Unit = { {} },
     modifier: Modifier = Modifier.Companion,
 ) {
     val navController = rememberNavController()
@@ -28,6 +29,9 @@ internal fun AppNavHost(
                     navController.navigate(Route.Settings.name) { launchSingleTop = true }
                 },
                 onExportCsv = onExportCsv,
+                onDashboard = {
+                    navController.navigate(Route.Dashboard.name) { launchSingleTop = true }
+                },
             )
         }
         forwardBackwardComposable(Route.Settings.name) {
@@ -39,6 +43,7 @@ internal fun AppNavHost(
                 onNotifications = {
                     navController.navigate(Route.Notifications.name) { launchSingleTop = true }
                 },
+                onExportCsv = onExportCsv,
                 onImportCsv = onImportCsv,
                 modifier = Modifier,
             )
@@ -53,6 +58,11 @@ internal fun AppNavHost(
                 onBack = { navController.popBackStack(Route.Notifications.name, inclusive = true) }
             )
         }
+        forwardBackwardComposable(Route.Dashboard.name) {
+            dashboardComposable {
+                navController.popBackStack(Route.Dashboard.name, inclusive = true)
+            }
+        }
     }
 }
 
@@ -61,4 +71,5 @@ private enum class Route {
     Settings,
     Background,
     Notifications,
+    Dashboard,
 }

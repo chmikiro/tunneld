@@ -24,10 +24,9 @@ interface ObserveAddressHistoryUseCase {
     /**
      * Observes the address history, filtering out the current addresses.
      *
-     * @param query The search query to filter the address history.
+     * @param query The search query (matches address or country, case-insensitive partial).
      * @param ipv4 Whether to include IPv4 addresses in the history.
      * @param ipv6 Whether to include IPv6 addresses in the history.
-     * @param country Optional country filter.
      * @param networkTypes Set of network types to include (empty = all).
      * @return A flow of [PagingData] containing the filtered address history.
      */
@@ -35,7 +34,6 @@ interface ObserveAddressHistoryUseCase {
         query: String?,
         ipv4: Boolean,
         ipv6: Boolean,
-        country: String?,
         networkTypes: Set<NetworkType> = emptySet(),
     ): Flow<PagingData<AddressHistory>>
 }
@@ -50,7 +48,6 @@ internal class ObserveAddressHistoryUseCaseImpl(
         query: String?,
         ipv4: Boolean,
         ipv6: Boolean,
-        country: String?,
         networkTypes: Set<NetworkType>,
     ): Flow<PagingData<AddressHistory>> =
         addressHistoryLocalDataSource
@@ -58,7 +55,6 @@ internal class ObserveAddressHistoryUseCaseImpl(
                 query = query,
                 ipv4 = ipv4,
                 ipv6 = ipv6,
-                country = country,
                 networkTypes = networkTypes,
             )
             .filterCurrent()

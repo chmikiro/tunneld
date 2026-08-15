@@ -12,11 +12,14 @@ fun RunInBackgroundRoute(onBack: () -> Unit, modifier: Modifier = Modifier.Compa
     val viewModel: BackgroundWorkViewModel = koinViewModel()
 
     val periodicWorkerRunning by viewModel.periodicWorkerRunning.collectAsStateWithLifecycle()
+    val realTimeMonitorRunning by viewModel.realTimeMonitorRunning.collectAsStateWithLifecycle()
 
     RunInBackgroundScreen(
         onBack = onBack,
         periodicRefreshRunning = periodicWorkerRunning,
+        realTimeMonitorRunning = realTimeMonitorRunning,
         onTogglePeriodicRefresh = viewModel::togglePeriodicWorker,
+        onToggleRealTimeMonitor = viewModel::toggleRealTimeMonitor,
         modifier = modifier,
     )
 }

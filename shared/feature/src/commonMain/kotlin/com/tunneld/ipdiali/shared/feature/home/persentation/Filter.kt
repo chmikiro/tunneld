@@ -7,10 +7,10 @@ import com.tunneld.ipdiali.shared.core.domain.NetworkType
 internal data class Filter(
     val protocols: Set<InternetProtocolVersion>,
     val networkTypes: Set<NetworkType> = emptySet(),
-    val country: String? = null,
+    val query: String? = null,
 ) {
     val filtersCount =
-        protocols.size + networkTypes.size + (if (country != null) 1 else 0)
+        protocols.size + networkTypes.size + (if (query != null) 1 else 0)
 
     fun toggleInternetProtocol(protocol: InternetProtocolVersion): Filter =
         if (protocols.contains(protocol)) {
@@ -26,5 +26,5 @@ internal data class Filter(
             copy(networkTypes = networkTypes + networkType)
         }
 
-    fun setCountry(newCountry: String?): Filter = copy(country = newCountry)
+    fun setQuery(newQuery: String?): Filter = copy(query = newQuery)
 }

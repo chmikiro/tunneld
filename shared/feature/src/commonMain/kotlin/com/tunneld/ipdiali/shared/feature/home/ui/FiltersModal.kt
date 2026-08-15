@@ -60,7 +60,7 @@ private fun FiltersModalContent(
     onUpdateFilter: (Filter) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var countryInput by remember(filter.country) { mutableStateOf(filter.country ?: "") }
+    var searchInput by remember(filter.query) { mutableStateOf(filter.query ?: "") }
 
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(
@@ -158,20 +158,21 @@ private fun FiltersModalContent(
             }
         }
 
-        // Country filter
+        // Unified search (country or IP)
         Spacer(Modifier.height(8.dp))
         Text(
-            text = "Country",
+            text = "String",
             style = MaterialTheme.typography.labelLarge,
             modifier = Modifier.padding(horizontal = 16.dp),
         )
         OutlinedTextField(
-            value = countryInput,
+            value = searchInput,
             onValueChange = { value ->
-                countryInput = value
-                onUpdateFilter(filter.setCountry(value.ifBlank { null }))
+                searchInput = value
+                onUpdateFilter(filter.setQuery(value.ifBlank { null }))
             },
-            label = { Text("e.g. Morocco, France") },
+            label = { Text("IP or country") },
+            placeholder = { Text("e.g. 192.168 or Morocco") },
             singleLine = true,
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
         )

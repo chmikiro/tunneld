@@ -10,6 +10,8 @@ import com.tunneld.ipdiali.infrastructure.room.FindMyIpDatabase.Companion.buildD
 import com.tunneld.ipdiali.shared.core.application.infrastructure.notification.NotificationResources
 import com.tunneld.ipdiali.shared.feature.dnsleak.presentation.AndroidDnsLeakPlatform
 import com.tunneld.ipdiali.shared.feature.dnsleak.presentation.DnsLeakPlatform
+import com.tunneld.ipdiali.widget.AndroidWidgetUpdateHook
+import com.tunneld.ipdiali.shared.core.application.infrastructure.widget.WidgetUpdateHook
 import okio.Path.Companion.toPath
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.Module
@@ -28,6 +30,7 @@ internal actual fun Scope.database(): FindMyIpDatabase =
 internal actual fun Module.platformModule() {
     factoryOf(::AndroidNotificationResources).bind<NotificationResources>()
     factory { AndroidDnsLeakPlatform(androidContext()) }.bind<DnsLeakPlatform>()
+    factory { AndroidWidgetUpdateHook(androidContext()) }.bind<WidgetUpdateHook>()
 }
 
 internal actual fun Scope.createDataStore(): DataStore<Preferences> =

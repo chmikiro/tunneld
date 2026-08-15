@@ -15,6 +15,7 @@ import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.Engineering
+import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.FileUpload
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Palette
@@ -27,6 +28,7 @@ import androidx.compose.material3.LargeFlexibleTopAppBar
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -61,6 +63,7 @@ internal fun SettingsScreen(
     onBack: () -> Unit,
     onRunInBackground: () -> Unit,
     onNotifications: () -> Unit,
+    onExportCsv: (String) -> Unit = {},
     onImportCsv: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -85,6 +88,8 @@ internal fun SettingsScreen(
             modifier = Modifier.fillMaxSize().nestedScroll(scrollBehavior.nestedScrollConnection),
             contentPadding = paddingValues.add(vertical = 8.dp),
         ) {
+            // === Behavior ===
+            item { SettingsSectionHeader("Behavior") }
             item {
                 ListItem(
                     headlineContent = {
@@ -107,6 +112,9 @@ internal fun SettingsScreen(
                     },
                 )
             }
+
+            // === Data & Backup ===
+            item { SettingsSectionHeader("Data & Backup") }
             item {
                 ListItem(
                     headlineContent = { Text("Geo IP Data Source") },
@@ -117,85 +125,57 @@ internal fun SettingsScreen(
             }
             item {
                 ListItem(
-                    headlineContent = { Text("Import CSV") },
-                    modifier = Modifier.heightIn(min = 68.dp).clickable { onImportCsv() },
-                    leadingContent = {
-                        Icon(
-                            Icons.Outlined.FileUpload,
-                            contentDescription = null,
-                        )
-                    },
-                    supportingContent = { Text("Import previously exported history") },
+                    headlineContent = { Text("Export CSV") },
+                    modifier = Modifier.heightIn(min = 68.dp).clickable { onExportCsv("") },
+                    leadingContent = { Icon(Icons.Outlined.FileDownload, null) },
+                    supportingContent = { Text("Save history as CSV file") },
                 )
             }
             item {
                 ListItem(
+                    headlineContent = { Text("Import CSV") },
+                    modifier = Modifier.heightIn(min = 68.dp).clickable { onImportCsv() },
+                    leadingContent = { Icon(Icons.Outlined.FileUpload, null) },
+                    supportingContent = { Text("Import previously exported history") },
+                )
+            }
+
+            // === Appearance ===
+            item { SettingsSectionHeader("Appearance") }
+            item {
+                ListItem(
                     headlineContent = { Text("Theme") },
                     modifier = Modifier.heightIn(min = 68.dp).clickable { showThemeDialog = true },
-                    leadingContent = {
-                        Icon(
-                            Icons.Outlined.Palette,
-                            contentDescription = null,
-                        )
-                    },
+                    leadingContent = { Icon(Icons.Outlined.Palette, null) },
                     supportingContent = { Text("System / Dark / Light") },
                 )
             }
             item {
                 ListItem(
-                    headlineContent = { Text("Clear History") },
-                    modifier = Modifier.heightIn(min = 68.dp).clickable { showClearDialog = true },
-                    leadingContent = {
-                        Icon(
-                            Icons.Outlined.DeleteForever,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.error,
+                    headlineContent = { Text("Translucent Top Bar") },
+                    supportingContent = { Text("When off, top bar uses solid background") },
+                    trailingContent = {
+                        val isTranslucent = ThemeState.isTopBarTranslucent
+                        Switch(
+                            checked = isTranslucent,
+                            onCheckedChange = { ThemeState.isTopBarTranslucent = it },
                         )
                     },
-                    supportingContent = { Text("Delete all stored IP addresses") },
+                    modifier = Modifier.heightIn(min = 68.dp),
                 )
             }
 
-            // Credits section
+            // === Red Zone ===
+            item { SettingsSectionHeader("Red Zone") }
             item {
-                val uriHandler = LocalUriHandler.current
-                Spacer(Modifier.height(32.dp))
-                Column(
-                    modifier =
-                        Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Text(
-                        "Tunnel'd",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Text(
-                        "v0.2.2",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        "github.com/chmikiro/tunneld",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.clickable { uriHandler.openUri("https://github.com/chmikiro/tunneld") },
-                    )
-                    Text(
-                        "ipdia.li",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.clickable { uriHandler.openUri("https://ipdia.li") },
-                    )
-                    Spacer(Modifier.height(4.dp))
-                    Text(
-                        "by chmikiro",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
-                    )
-                    Spacer(Modifier.height(16.dp))
-                }
+                ListItem(
+                    headlineContent = { Text("Clear History") },
+                    modifier = Modifier.heightIn(min = 68.dp).clickable { showClearDialog = true },
+                    leadingContent = {
+                        Icon(Icons.Outlined.DeleteForever, null, tint = MaterialTheme.colorScheme.error)
+                    },
+                    supportingContent = { Text("Delete all stored IP addresses") },
+                )
             }
         }
     }
@@ -279,6 +259,18 @@ internal fun SettingsScreen(
             },
         )
     }
+}
+
+@Composable
+private fun SettingsSectionHeader(title: String) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.labelLarge,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+    )
 }
 
 @Composable

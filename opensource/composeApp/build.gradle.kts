@@ -56,6 +56,7 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.koin.android)
+            implementation(libs.glance.appwidget)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -103,8 +104,8 @@ android {
         applicationId = "com.tunneld.ipdiali"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 9
-        versionName = "0.2.2"
+        versionCode = 14
+        versionName = "0.3.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {

@@ -1,4 +1,5 @@
 [versions]
+glance = "1.1.1"
 android-compileSdk = "36"
 android-minSdk = "26"
 android-targetSdk = "36"
@@ -28,6 +29,7 @@ room = "2.8.0"
 workRuntimeKtx = "2.10.4"
 
 [libraries]
+glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = "glance" }
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest", version.ref = "composeAndroid" }

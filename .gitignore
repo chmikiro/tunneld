@@ -17,5 +17,9 @@ captures
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 keystore*
+*.keystore
+*.jks
+*.p12
+*.pkcs12
 *.apk*
 screenshots*

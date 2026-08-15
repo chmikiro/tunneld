@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">"Tunnel'd"</string>
+    <string name="widget_description">Shows your current IP address</string>
 </resources>
