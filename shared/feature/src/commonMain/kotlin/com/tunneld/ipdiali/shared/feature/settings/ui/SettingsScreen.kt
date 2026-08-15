@@ -47,6 +47,12 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.material.icons.outlined.Code
+import androidx.compose.material.icons.outlined.Fingerprint
+import androidx.compose.material.icons.outlined.Gavel
+import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.outlined.PrivacyTip
 import com.tunneld.ipdiali.shared.core.feature.ui.ArrowBackIconButton
 import com.tunneld.ipdiali.shared.core.feature.ui.ThemeState
 import com.tunneld.ipdiali.shared.core.domain.ThemeMode
@@ -73,6 +79,7 @@ internal fun SettingsScreen(
     var showThemeDialog by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val clearHistoryUseCase: ClearHistoryUseCase = koinInject()
+    val uriHandler = LocalUriHandler.current
 
     Scaffold(
         modifier = modifier,
@@ -175,6 +182,57 @@ internal fun SettingsScreen(
                         Icon(Icons.Outlined.DeleteForever, null, tint = MaterialTheme.colorScheme.error)
                     },
                     supportingContent = { Text("Delete all stored IP addresses") },
+                )
+            }
+
+            // === About ===
+            item { SettingsSectionHeader("About") }
+            item {
+                ListItem(
+                    headlineContent = { Text("Tunnel'd") },
+                    supportingContent = { Text("v0.4.0") },
+                )
+            }
+            item {
+                ListItem(
+                    headlineContent = { Text("GitHub") },
+                    supportingContent = { Text("chmikiro/tunneld") },
+                    leadingContent = { Icon(Icons.Outlined.Code, null) },
+                    modifier = Modifier.heightIn(min = 68.dp).clickable { uriHandler.openUri("https://github.com/chmikiro/tunneld") },
+                )
+            }
+            item {
+                ListItem(
+                    headlineContent = { Text("ipdia.li") },
+                    leadingContent = { Icon(Icons.Outlined.Language, null) },
+                    modifier = Modifier.heightIn(min = 68.dp).clickable { uriHandler.openUri("https://ipdia.li") },
+                )
+            }
+            item {
+                ListItem(
+                    headlineContent = { Text("Privacy Policy") },
+                    leadingContent = { Icon(Icons.Outlined.PrivacyTip, null) },
+                    modifier = Modifier.heightIn(min = 68.dp).clickable { uriHandler.openUri("https://github.com/chmikiro/tunneld/blob/main/docs/privacy-policy.html") },
+                )
+            }
+            item {
+                ListItem(
+                    headlineContent = { Text("License") },
+                    supportingContent = { Text("GPL-3.0") },
+                    leadingContent = { Icon(Icons.Outlined.Gavel, null) },
+                )
+            }
+            item {
+                ListItem(
+                    headlineContent = { Text("Signing key fingerprint (SHA-256)") },
+                    supportingContent = {
+                        Text(
+                            "FC:FC:36:A3:0A:87:AA:FA:3D:72:8B:C9:5A:48:EF:D1:51:5C:64:44:1E:64:E4:17:4E:DF:A4:E2:7B:3D:39:C6",
+                            style = MaterialTheme.typography.labelSmall,
+                            fontFamily = FontFamily.Monospace,
+                        )
+                    },
+                    leadingContent = { Icon(Icons.Outlined.Fingerprint, null) },
                 )
             }
         }
