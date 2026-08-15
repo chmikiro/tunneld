@@ -2,25 +2,16 @@
 
 ## v0.3.0 (2026-08-14)
 
-### Added
-- Android home screen widget (Glance): current IP card with country, ISP, org, and refresh
-- Widget auto-refreshes when IP changes via WidgetUpdateHook in the refresh pipeline
-- Time range filter in Dashboard: All time / Last 30 days / Last 7 days / Today
-- Settings screen reorganization: Behavior, Data & Backup, Appearance, Red Zone sections
-- Translucent Top Bar toggle (Appearance section)
+### New features
 
-### Changed
-- "Tunnel'd" text brand replaces globe icon in top bar — bold text adapts to theme
-- Top bar now filled with theme background color by default (was transparent)
-- Dashboard countries metric now counts all unique countries (was capped at 10)
-- Lookup external IP label simplified to "IP address" (removed domain reference)
-- Network type hidden from lookup result card (set to UNKNOWN internally)
+- **Real-time tracking** — off by default. When enabled (Settings > Behavior), a foreground service detects IP changes instantly and shows a persistent notification. The existing periodic check (30 min, also off by default) remains a separate, independent toggle
+- **Analytics dashboard** — new screen in the top bar. Visualizes your IP history: network-type chart, country counts, time-range filters (Today / 7 days / 30 days / All time)
+- **Lookup external IP** — button on the home screen. Enter any IP (e.g. 8.8.8.8) to see its country, ISP, and provider details
+- **Home screen widget (beta)** — optional; add it from your launcher's widget picker. Shows current IP, country, city, ISP, and organization, and updates when the IP changes
 
-### Fixed
-- Dashboard Cellular entries included in network type donut chart
-- Version display in Settings updated across releases
 
-### Technical
-- ShowNetworkType parameter added to AddressButton to conditionally render network type
-- Time filtering for dashboard uses epoch-day comparison (no DAO changes)
-- Widget data syncs through SharedPreferences + APPWIDGET_UPDATE broadcast
+### Changed (defaults noted)
+
+- **Top bar** — filled with the theme background by default. A translucent top bar option is available in Settings > Appearance
+- **Search filter** — the country filter now matches IP addresses too (e.g. 192.168 or Morocco)
+- **Settings** — reorganized into Behavior, Data & Backup, Appearance, and Red Zone
