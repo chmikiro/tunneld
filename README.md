@@ -31,7 +31,7 @@ Android app that **locally** tracks IP address changes, performs DNS leak tests,
 
 | Feature | Description | Status |
 | :--- | :--- | :--- |
-| **IP & Geolocation Display** | Shows current IPv4 and IPv6 address with geolocation data (country, city, ISP, ASN org). Users can pick one of 3 providers in settings. | Current |
+| **IP & Geolocation Display** | Shows current IPv4 and IPv6 address with geolocation data (country, city, ISP, ASN org). Users can pick one of 3 providers in settings [*(related privacy policy)*](https://github.com/chmikiro/tunneld/blob/main/docs/privacy-policy.html). | Current |
 | **Lookup External IP** | Look up any IP address (e.g. 8.8.8.8) from the home screen to see its country, ISP, and provider details. | Current |
 | **Background Monitoring** | Periodic refresh (30 min, off by default) that sends notifications upon IP change. | Current |
 | **Real-time Tracking** | Off by default (Settings > Behavior). A foreground service detects IP changes instantly and shows a persistent notification, independent of periodic checks. | Current |
@@ -47,6 +47,7 @@ Android app that **locally** tracks IP address changes, performs DNS leak tests,
 | **Analytics Dashboard** | New top-bar screen visualizing IP history: network-type chart, country counts, and time-range filters (Today / 7 days / 30 days / All time), 100% local processing. | Current |
 | **CSV Export** | Exports filtered history to CSV (includes address, version, network_type, country, country_code, city, isp, org, timezone, latitude, longitude, timestamp). | Current |
 | **Import & Restore** | Import and restore previously exported history files. | Current |
+| **Options for IP identification provider** | Pick from a list the provider identifying IP address (currently only [ipify.org](https://github.com/chmikiro/tunneld/blob/main/docs/privacy-policy.html)). | Next release |
 
 ### Security & Leak Tests
 
@@ -61,8 +62,8 @@ Android app that **locally** tracks IP address changes, performs DNS leak tests,
 | :--- | :--- | :--- |
 | **Native IP Logging** | Option to use our servers for IP Logging, including GeoIP and IP identification. | Future Release |
 | **Device Identity Leak Detection** | Detects device-level identity leaks. | Future Release |
-| **In-App APK/Link Scanning** | Scans APKs and links against antivirus providers. | Future Release |
-| **AI-Powered Personalized Reports** | Optional AI-generated reports (API keys optional). | Future Release |
+| **In-App APK/Link Scanning** | Scans APKs and links against antivirus providers. | Future Release *(next release for links and IPs)* |
+| **AI-Powered Personalized Reports** | Optional AI-generated reports *(optional, with your API keys)*. | Future Release |
 
 ## Why Tunnel'd
 - Beyond bundling all of the above in non-bloated shell ..
