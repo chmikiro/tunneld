@@ -1,21 +1,26 @@
 # Tunnel'd
 
-Android app that **locally** tracks IP address changes, performs DNS leak tests, and includes JSON/CSV backup & restore. Future features include WebRTC leak testing, device identity leak detection, in-app APK/link scanning against antivirus providers, and optional AI-powered personalized reports (API keys optional). Built **without** _**bloated frameworks**_, prioritizing fully **FOSS**, **auditable**, and **reproducible** solutions.
+Android app that **locally** tracks IP address changes, performs DNS leak tests, and includes JSON/CSV backup & restore. Future features include [WebRTC leak](https://github.com/chmikiro/tunneld/blob/main/educational/WEBRTCLEAK.md) testing, device identity leak detection, in-app APK/link scanning against antivirus providers, and optional AI-powered personalized reports (API keys optional). Built **without** _**bloated frameworks**_, prioritizing fully **FOSS**, **auditable**, and **reproducible** solutions.
+
 
 
 <div align="center">
 
-<img src="https://github.com/user-attachments/assets/450f64c4-5814-45dc-864b-3d85494e9da6" width="200" alt="Home screen" />
+<img src="https://github.com/user-attachments/assets/0dd183a1-a193-4d93-a66d-c28b6cbcaf4f" width="200" alt="Home screen" />
 &nbsp;
-<img src="https://github.com/user-attachments/assets/738f0468-ed2b-4559-8f69-24c15c252113" width="200" alt="Lookup external IP" />
-&nbsp;
-<img src="https://github.com/user-attachments/assets/0d264c27-5e34-403f-a649-0555eec4c17a" width="200" alt="Dashboard analytics" />
+<img src="https://github.com/user-attachments/assets/3a0b2b96-ccd7-4c01-85a4-96c620d913ae"" width="200" alt="Lookup external IP" />
 
 <br />
 
-<img src="https://github.com/user-attachments/assets/6de96ade-f0cc-4a8f-9d39-5ab1759f4eb0" width="200" alt="Settings" />
+<img src="https://github.com/user-attachments/assets/8300de80-efda-41c4-a6da-3a78d3fff6f6" width="200" alt="DNS leak test" />
 &nbsp;
-<img src="https://github.com/user-attachments/assets/820f0e31-e170-4c64-b65c-1e20e58d5cc7" width="200" alt="Widget" />
+<img src="https://github.com/user-attachments/assets/efec6129-a001-47d2-a989-48aef4c13eed" width="200" alt="Dashboard analytics" />
+
+<br />
+
+<img src="https://github.com/user-attachments/assets/9ec56919-d20c-495d-a913-7762fdd6c7e0" width="200" alt="Settings overview" />
+&nbsp;
+<img src="https://github.com/user-attachments/assets/474689c7-5032-4a77-9a97-a9d85070089e" width="200" alt="Focus service & data source" />
 
 </div>
 
@@ -26,7 +31,7 @@ Android app that **locally** tracks IP address changes, performs DNS leak tests,
 
 | Feature | Description | Status |
 | :--- | :--- | :--- |
-| **IP & Geolocation Display** | Shows current IPv4 and IPv6 address with geolocation data (country, city, ISP, ASN org). Users can pick one of 3 providers in settings. | Current |
+| **IP & Geolocation Display** | Shows current IPv4 and IPv6 address with geolocation data (country, city, ISP, ASN org). Users can pick one of 3 providers in settings [*(related privacy policy)*](https://github.com/chmikiro/tunneld/blob/main/docs/privacy-policy.html). | Current |
 | **Lookup External IP** | Look up any IP address (e.g. 8.8.8.8) from the home screen to see its country, ISP, and provider details. | Current |
 | **Background Monitoring** | Periodic refresh (30 min, off by default) that sends notifications upon IP change. | Current |
 | **Real-time Tracking** | Off by default (Settings > Behavior). A foreground service detects IP changes instantly and shows a persistent notification, independent of periodic checks. | Current |
@@ -39,9 +44,11 @@ Android app that **locally** tracks IP address changes, performs DNS leak tests,
 | :--- | :--- | :--- |
 | **Searchable History** | Keeps a fully searchable history of past IP addresses. Country filter also matches IP addresses (e.g. 192.168 or Morocco). | Current |
 | **Advanced Filtering** | Filters history by IP version (v4/v6), network type (Wi-Fi/Cellular/VPN), and country/IP (partial, case-insensitive). | Current |
-| **Analytics Dashboard** | New top-bar screen visualizing IP history: network-type chart, country counts, and time-range filters (Today / 7 days / 30 days / All time), 100% local processing. | Current |
+| **Semi-static Analytics Dashboard** | New top-bar screen to access charted IP history (Aka Data Viz): network-type chart, country counts, and time-range filters (Today / 7 days / 30 days / All time), 100% local processing. | Current |
+| **Dynamic Analytics Dashboard** | Fully flexible charts with more data viz variants dynamically updating each component (a la power pivot): full dataset, custom time range, inherit main screen filters, etc. | Future release |
 | **CSV Export** | Exports filtered history to CSV (includes address, version, network_type, country, country_code, city, isp, org, timezone, latitude, longitude, timestamp). | Current |
 | **Import & Restore** | Import and restore previously exported history files. | Current |
+| **Options for IP identification provider** | Pick from a list the provider identifying IP address (currently only [ipify.org](https://github.com/chmikiro/tunneld/blob/main/docs/privacy-policy.html)). | Next release |
 
 ### Security & Leak Tests
 
@@ -56,8 +63,8 @@ Android app that **locally** tracks IP address changes, performs DNS leak tests,
 | :--- | :--- | :--- |
 | **Native IP Logging** | Option to use our servers for IP Logging, including GeoIP and IP identification. | Future Release |
 | **Device Identity Leak Detection** | Detects device-level identity leaks. | Future Release |
-| **In-App APK/Link Scanning** | Scans APKs and links against antivirus providers. | Future Release |
-| **AI-Powered Personalized Reports** | Optional AI-generated reports (API keys optional). | Future Release |
+| **In-App APK/Link Scanning** | Scans APKs and links against antivirus providers. | Future Release *(next release for links and IPs)* |
+| **AI-Powered Personalized Reports** | Optional AI-generated reports *(optional, with your API keys)*. | Future Release |
 
 ## Why Tunnel'd
 - Beyond bundling all of the above in non-bloated shell ..
