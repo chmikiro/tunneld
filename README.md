@@ -3,19 +3,24 @@
 Android app that **locally** tracks IP address changes, performs DNS leak tests, and includes JSON/CSV backup & restore. Future features include WebRTC leak testing, device identity leak detection, in-app APK/link scanning against antivirus providers, and optional AI-powered personalized reports (API keys optional). Built **without** _**bloated frameworks**_, prioritizing fully **FOSS**, **auditable**, and **reproducible** solutions.
 
 
+
 <div align="center">
 
-<img src="https://github.com/user-attachments/assets/450f64c4-5814-45dc-864b-3d85494e9da6" width="200" alt="Home screen" />
+<img src="https://github.com/user-attachments/assets/0dd183a1-a193-4d93-a66d-c28b6cbcaf4f" width="200" alt="Home screen" />
 &nbsp;
-<img src="https://github.com/user-attachments/assets/738f0468-ed2b-4559-8f69-24c15c252113" width="200" alt="Lookup external IP" />
-&nbsp;
-<img src="https://github.com/user-attachments/assets/0d264c27-5e34-403f-a649-0555eec4c17a" width="200" alt="Dashboard analytics" />
+<img src="https://github.com/user-attachments/assets/3a0b2b96-ccd7-4c01-85a4-96c620d913ae"" width="200" alt="Lookup external IP" />
 
 <br />
 
-<img src="https://github.com/user-attachments/assets/6de96ade-f0cc-4a8f-9d39-5ab1759f4eb0" width="200" alt="Settings" />
+<img src="https://github.com/user-attachments/assets/8300de80-efda-41c4-a6da-3a78d3fff6f6" width="200" alt="DNS leak test" />
 &nbsp;
-<img src="https://github.com/user-attachments/assets/820f0e31-e170-4c64-b65c-1e20e58d5cc7" width="200" alt="Widget" />
+<img src="https://github.com/user-attachments/assets/efec6129-a001-47d2-a989-48aef4c13eed" width="200" alt="Dashboard analytics" />
+
+<br />
+
+<img src="https://github.com/user-attachments/assets/9ec56919-d20c-495d-a913-7762fdd6c7e0" width="200" alt="Settings overview" />
+&nbsp;
+<img src="https://github.com/user-attachments/assets/474689c7-5032-4a77-9a97-a9d85070089e" width="200" alt="Focus service & data source" />
 
 </div>
 
