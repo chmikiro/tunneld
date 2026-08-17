@@ -31,7 +31,7 @@ Android app that **locally** tracks IP address changes, performs DNS leak tests,
 
 | Feature | Description | Status |
 | :--- | :--- | :--- |
-| **IP & Geolocation Display** | Shows current IPv4 and IPv6 address with geolocation data (country, city, ISP, ASN org). Users can pick one of 3 providers in settings [*(related privacy policy)*](https://github.com/chmikiro/tunneld/blob/main/docs/privacy-policy.html). | Current |
+| **IP & Geolocation Display** | Shows current IPv4 and IPv6 address with geolocation data (country, city, ISP, ASN org). Users can pick one of 3 providers in settings [*(related privacy policy)*](https://github.com/chmikiro/tunneld/blob/895bf85802c570b9d27c6ad635ceafbe4495db2f/docs/privacy-policy.md). | Current |
 | **Lookup External IP** | Look up any IP address (e.g. 8.8.8.8) from the home screen to see its country, ISP, and provider details. | Current |
 | **Background Monitoring** | Periodic refresh (30 min, off by default) that sends notifications upon IP change. | Current |
 | **Real-time Tracking** | Off by default (Settings > Behavior). A foreground service detects IP changes instantly and shows a persistent notification, independent of periodic checks. | Current |
@@ -48,7 +48,7 @@ Android app that **locally** tracks IP address changes, performs DNS leak tests,
 | **Dynamic Analytics Dashboard** | Fully flexible charts with more data viz variants dynamically updating each component (a la power pivot): full dataset, custom time range, inherit main screen filters, etc. | Future release |
 | **CSV Export** | Exports filtered history to CSV (includes address, version, network_type, country, country_code, city, isp, org, timezone, latitude, longitude, timestamp). | Current |
 | **Import & Restore** | Import and restore previously exported history files. | Current |
-| **Options for IP identification provider** | Pick from a list the provider identifying IP address (currently only [ipify.org](https://github.com/chmikiro/tunneld/blob/main/docs/privacy-policy.html)). | Next release |
+| **Options for IP identification provider** | Pick from a list the provider identifying IP address (currently only [ipify.org](https://github.com/chmikiro/tunneld/blob/895bf85802c570b9d27c6ad635ceafbe4495db2f/docs/privacy-policy.md)). | Next release |
 
 ### Security & Leak Tests
 
