@@ -110,3 +110,8 @@ Signing: drop your keystore at the project root as `findmyip-release.keystore` (
 ## License
 
 GPLv3 — see [LICENSE](LICENSE).
+
+
+## Privacy
+
+[Privacy Policy](https://chmikiro.github.io/tunneld/privacy-policy.html)
