@@ -105,6 +105,7 @@ Signing: drop your keystore at the project root as `findmyip-release.keystore` (
 ## Acknowledgment
 
 - [Mateusz Maksimowicz](https://github.com/maksimowiczm/find-my-ip)
+- [Hossein Pira](https://github.com/code3-dev/dnsleak)
 
 
 ## License
@@ -112,6 +113,7 @@ Signing: drop your keystore at the project root as `findmyip-release.keystore` (
 GPLv3 — see [LICENSE](LICENSE).
 
 
-## Privacy
+## Security & Privacy
 
-[Privacy Policy](https://chmikiro.github.io/tunneld/privacy-policy.html)
+- **[Privacy Policy](https://chmikiro.github.io/tunneld/privacy-policy.html)**
+- **[Trust Boundaries](https://github.com/chmikiro/tunneld?tab=security-ov-file)**
