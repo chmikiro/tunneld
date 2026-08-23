@@ -13,6 +13,8 @@ internal class IpApiCoProvider(
     override val requiresApiKey = false
     override val signupUrl = null
 
+    override fun websiteUrl(ip: String) = "https://ipapi.co/$ip/"
+
     override suspend fun lookup(ip: String, apiKey: String?): IpInfo? {
         return try {
             val json: String = httpClient

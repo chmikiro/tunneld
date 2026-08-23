@@ -17,7 +17,9 @@ import com.tunneld.ipdiali.shared.core.infrastructure.datastore.DataStoreNotific
 import com.tunneld.ipdiali.shared.core.infrastructure.date.DateProviderImpl
 import com.tunneld.ipdiali.shared.core.infrastructure.fake.FakeAddressDataSource
 import com.tunneld.ipdiali.shared.core.infrastructure.inmemory.InMemoryIpAddressDataSource
+import com.tunneld.ipdiali.shared.core.infrastructure.ipapi.DataStoreExternalLinkPreferences
 import com.tunneld.ipdiali.shared.core.infrastructure.ipapi.DataStoreGeoIpPreferences
+import com.tunneld.ipdiali.shared.core.infrastructure.ipapi.ExternalLinkPreferences
 import com.tunneld.ipdiali.shared.core.infrastructure.ipapi.VtApiKeyPreferences
 import com.tunneld.ipdiali.shared.core.infrastructure.virustotal.KtorVtIpLookup
 import com.tunneld.ipdiali.shared.core.infrastructure.virustotal.VtIpLookup
@@ -86,6 +88,10 @@ private fun Module.ipifyModule() {
     single { DataStoreGeoIpPreferences(get()) }
     single<VtApiKeyPreferences> { get<DataStoreGeoIpPreferences>() }
     single<GeoIpPreferences> { get<DataStoreGeoIpPreferences>() }
+
+    // External-browser confirmation skip flags
+    single { DataStoreExternalLinkPreferences(get()) }
+    single<ExternalLinkPreferences> { get<DataStoreExternalLinkPreferences>() }
 
     // Geolocation providers
     single { Ip2LocationProvider(httpClient = get(named("ipifyClient"))) }

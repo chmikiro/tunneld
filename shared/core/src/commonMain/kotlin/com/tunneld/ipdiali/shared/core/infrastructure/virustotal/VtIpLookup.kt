@@ -6,7 +6,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 
 data class VtIpReport(
-    val ip: String,
+    val target: String,
     val harmless: Int,
     val malicious: Int,
     val suspicious: Int,
@@ -17,26 +17,33 @@ data class VtIpReport(
 }
 
 interface VtIpLookup {
-    suspend fun lookup(ip: String, apiKey: String): VtIpReport?
+    suspend fun lookupIp(ip: String, apiKey: String): VtIpReport?
+    suspend fun lookupDomain(domain: String, apiKey: String): VtIpReport?
 }
 
 internal class KtorVtIpLookup(
     private val httpClient: HttpClient,
 ) : VtIpLookup {
-    override suspend fun lookup(ip: String, apiKey: String): VtIpReport? {
+    override suspend fun lookupIp(ip: String, apiKey: String): VtIpReport? =
+        request("ip_addresses", ip, apiKey)
+
+    override suspend fun lookupDomain(domain: String, apiKey: String): VtIpReport? =
+        request("domains", domain, apiKey)
+
+    private suspend fun request(kind: String, target: String, apiKey: String): VtIpReport? {
         return try {
             val json: String = httpClient
-                .get("https://www.virustotal.com/api/v3/ip_addresses/$ip") {
+                .get("https://www.virustotal.com/api/v3/$kind/$target") {
                     header("x-apikey", apiKey)
                 }
                 .body()
-            parse(json, ip)
+            parse(json, target)
         } catch (_: Exception) {
             null
         }
     }
 
-    private fun parse(json: String, ip: String): VtIpReport? {
+    private fun parse(json: String, target: String): VtIpReport? {
         // VT returns {"error": ...} when no report exists or bad key
         if (json.contains("\"error\"")) return null
         fun stat(key: String): Int {
@@ -44,7 +51,7 @@ internal class KtorVtIpLookup(
             return m.groupValues[1].toIntOrNull() ?: 0
         }
         return VtIpReport(
-            ip = ip,
+            target = target,
             harmless = stat("harmless"),
             malicious = stat("malicious"),
             suspicious = stat("suspicious"),

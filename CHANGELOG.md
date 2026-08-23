@@ -1,5 +1,19 @@
 # Changelog
 
+## v0.4.0 (2026-08-23)
+
+### New features
+
+- **VirusTotal reputation lookup** — bug icon on the home screen. Enter any IP address or domain to see its security reputation (harmless / malicious / suspicious / undetected). Requires your own VirusTotal API key (Settings > Data & Backup), never embedded or proxied
+- **Open results in your browser** — from a VirusTotal result or the current-IP detail, open the report/provider page in an external browser. A confirmation dialog appears first; "Don't show this message again" is remembered separately for each
+- **About section** — bottom of Settings: app version, license (GPL-3.0), and links to GitHub, ipdia.li, Privacy Policy, and Security & Trust
+
+### Changed (defaults noted)
+
+- **Home top bar** — the "Lookup external IP" button is replaced by two icons: a globe (IP geolocation) and a bug (VirusTotal). The geolocation lookup itself is unchanged and stays IP-only
+- **Settings footer** — links are shown two per row
+- **Signing fingerprint** — removed from About (F-Droid re-signs the app, so an in-app fingerprint would be misleading)
+
 ## v0.3.0 (2026-08-14)
 
 ### New features

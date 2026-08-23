@@ -2,6 +2,7 @@ package com.tunneld.ipdiali.shared.feature.settings.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,9 +10,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.Engineering
@@ -45,6 +49,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.Role
@@ -53,6 +59,7 @@ import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material.icons.outlined.Gavel
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.PrivacyTip
+import androidx.compose.material.icons.outlined.Shield
 import com.tunneld.ipdiali.shared.core.feature.ui.ArrowBackIconButton
 import com.tunneld.ipdiali.shared.core.feature.ui.ThemeState
 import com.tunneld.ipdiali.shared.core.infrastructure.ipapi.VtApiKeyPreferences
@@ -153,7 +160,7 @@ internal fun SettingsScreen(
                     headlineContent = { Text("VirusTotal API Key") },
                     modifier = Modifier.heightIn(min = 68.dp).clickable { showVtKeyDialog = true },
                     leadingContent = { Icon(Icons.Outlined.BugReport, null) },
-                    supportingContent = { Text("Used for IP reputation lookups") },
+                    supportingContent = { Text("Used for IP and domain reputation lookups") },
                 )
             }
 
@@ -205,32 +212,22 @@ internal fun SettingsScreen(
             }
             item {
                 ListItem(
-                    headlineContent = { Text("GitHub") },
-                    supportingContent = { Text("chmikiro/tunneld") },
-                    leadingContent = { Icon(Icons.Outlined.Code, null) },
-                    modifier = Modifier.heightIn(min = 68.dp).clickable { uriHandler.openUri("https://github.com/chmikiro/tunneld") },
-                )
-            }
-            item {
-                ListItem(
-                    headlineContent = { Text("ipdia.li") },
-                    leadingContent = { Icon(Icons.Outlined.Language, null) },
-                    modifier = Modifier.heightIn(min = 68.dp).clickable { uriHandler.openUri("https://ipdia.li") },
-                )
-            }
-            item {
-                ListItem(
-                    headlineContent = { Text("Privacy Policy") },
-                    leadingContent = { Icon(Icons.Outlined.PrivacyTip, null) },
-                    modifier = Modifier.heightIn(min = 68.dp).clickable { uriHandler.openUri("https://github.com/chmikiro/tunneld/blob/main/docs/privacy-policy.html") },
-                )
-            }
-            item {
-                ListItem(
                     headlineContent = { Text("License") },
                     supportingContent = { Text("GPL-3.0") },
                     leadingContent = { Icon(Icons.Outlined.Gavel, null) },
                 )
+            }
+            item {
+                Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        LinkCell("ipdia.li", Icons.Outlined.Language, { uriHandler.openUri("https://ipdia.li") }, Modifier.weight(1f))
+                        LinkCell("GitHub", Icons.Outlined.Code, { uriHandler.openUri("https://github.com/chmikiro/tunneld") }, Modifier.weight(1f))
+                    }
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        LinkCell("Privacy Policy", Icons.Outlined.PrivacyTip, { uriHandler.openUri("https://chmikiro.github.io/tunneld/privacy-policy.html") }, Modifier.weight(1f))
+                        LinkCell("Security & Trust", Icons.Outlined.Shield, { uriHandler.openUri("https://chmikiro.github.io/tunneld/trust-boundaries.html") }, Modifier.weight(1f))
+                    }
+                }
             }
         }
     }
@@ -332,6 +329,26 @@ private fun SettingsSectionHeader(title: String) {
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 12.dp),
     )
+}
+
+@Composable
+private fun LinkCell(
+    label: String,
+    icon: ImageVector,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
+            .clickable(onClick = onClick)
+            .padding(horizontal = 12.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(icon, null, modifier = Modifier.size(20.dp), tint = MaterialTheme.colorScheme.primary)
+        Spacer(Modifier.width(8.dp))
+        Text(label, style = MaterialTheme.typography.bodyMedium)
+    }
 }
 
 @Composable

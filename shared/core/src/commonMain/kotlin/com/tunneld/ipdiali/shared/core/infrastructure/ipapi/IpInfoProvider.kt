@@ -13,6 +13,8 @@ internal class IpInfoProvider(
     override val requiresApiKey = false
     override val signupUrl = "https://ipinfo.io/signup"
 
+    override fun websiteUrl(ip: String) = "https://ipinfo.io/$ip"
+
     override suspend fun lookup(ip: String, apiKey: String?): IpInfo? {
         return try {
             val url = if (apiKey != null) {
