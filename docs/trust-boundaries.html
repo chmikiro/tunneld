@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en"
+<head>
+    <meta charset="UTF-8">
+    <title>Privacy Policy — Tunnel'd</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+            line-height: 1.6;
+            color: #333;
+        }
+      
+        h1,
+        h2 {
+            color: #222;
+        }
+
+        a {
+            color: #0066cc;
+        }
+
+        code {
+            background: #f2f2f2;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+
+        .meta {
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+
+<body>
+    <h1>Trust boundaries</h1>
+    <p class="meta">Last updated: August 16, 2026</p
+
+    <p>Tunnel'd relies on <strong>three</strong> kinds of external visibility:</p>
+
+
+    <ul>
+        <li>IP info providers. These providers can see the request used to determine the public IP and return metadata such as country, ISP, or organization.</li>
+        <li>The Tunnel'd / ipdia.li DNS leak test service. This service can observe resolver-related requests that reach the test infrastructure and report them back to the app.</li>
+        <li>The Android networking stack. Tunnel'd reports what it can observe and what its configured services can observe. It cannot guarantee that Android, a VPN app, or another app never uses a different resolver path outside the observed test flow.</li>
+    </ul>
+
+    <p>As a consequence:</p>
+
+    <ul>
+        <li>Tunnel'd should be used as a measurement tool, not as a guarantee.</li>
+        <li>Results are strongest when repeated across different networks, apps, and transition states.</li>
+        <li>Users with strict privacy requirements should verify behavior with independent packet capture and resolver-side testing as well.</li>
+    </ul>
+  
+
+    <h1>Contact</h1>
+    <p>For questions or concerns, open an issue at <a href="https://github.com/chmikiro/tunneld" target="_blank" rel="noopener noreferrer">github.com/chmikiro/tunneld</a>.</p>
+    
+</bod
+</html>
