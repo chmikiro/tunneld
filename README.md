@@ -35,8 +35,10 @@ Android app that **locally** tracks IP address changes, performs DNS leak tests,
 | **Lookup External IP** | Look up any IP address (e.g. 8.8.8.8) from the home screen to see its country, ISP, and provider details. | Current |
 | **Background Monitoring** | Periodic refresh (30 min, off by default) that sends notifications upon IP change. | Current |
 | **Real-time Tracking** | Off by default (Settings > Behavior). A foreground service detects IP changes instantly and shows a persistent notification, independent of periodic checks. | Current |
+| **In-App domain name/link scanning** | Scans links and, specifically, domain names reputation against antivirus providers. | Current *(via VT, more providers to come)* |
+| **In-App IP Scanning** | Scans IPs against antivirus providers, with autodetect option for current IP. | Current  *(via VT, more providers to come)* |
 | **Home Screen Widget (Beta)** | Optional widget showing current IP, country, city, ISP, and organization; updates automatically on IP change. | Current (Beta) |
-| **Lightweight Architecture** | Designed to remain lightweight on both the client and server side. | Current |
+
 
 ### History & Data Management
 
@@ -45,7 +47,7 @@ Android app that **locally** tracks IP address changes, performs DNS leak tests,
 | **Searchable History** | Keeps a fully searchable history of past IP addresses. Country filter also matches IP addresses (e.g. 192.168 or Morocco). | Current |
 | **Advanced Filtering** | Filters history by IP version (v4/v6), network type (Wi-Fi/Cellular/VPN), and country/IP (partial, case-insensitive). | Current |
 | **Semi-static Analytics Dashboard** | New top-bar screen to access charted IP history (Aka Data Viz): network-type chart, country counts, and time-range filters (Today / 7 days / 30 days / All time), 100% local processing. | Current |
-| **Dynamic Analytics Dashboard** | Fully flexible charts with more data viz variants dynamically updating each component (a la power pivot): full dataset, custom time range, inherit main screen filters, etc. | Future release |
+| **Dynamic Analytics Dashboard** | Fully flexible charts with more data viz variants dynamically updating each component (a la power pivot): full dataset, custom time range, inherit main screen filters, etc. | Next release |
 | **CSV Export** | Exports filtered history to CSV (includes address, version, network_type, country, country_code, city, isp, org, timezone, latitude, longitude, timestamp). | Current |
 | **Import & Restore** | Import and restore previously exported history files. | Current |
 | **Options for IP identification provider** | Pick from a list the provider identifying IP address (currently only [ipify.org](https://chmikiro.github.io/tunneld/privacy-policy.html)). | Next release |
@@ -63,7 +65,7 @@ Android app that **locally** tracks IP address changes, performs DNS leak tests,
 | :--- | :--- | :--- |
 | **Native IP Logging** | Option to use our servers for IP Logging, including GeoIP and IP identification. | Future Release |
 | **Device Identity Leak Detection** | Detects device-level identity leaks. | Future Release |
-| **In-App APK/Link Scanning** | Scans APKs and links against antivirus providers. | Future Release *(next release for links and IPs)* |
+| **In-App APK Scanning** | Scans APKs against antivirus providers. | Future Release |
 | **AI-Powered Personalized Reports** | Optional AI-generated reports *(optional, with your API keys)*. | Future Release |
 
 ## Why Tunnel'd
