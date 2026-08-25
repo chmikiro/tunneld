@@ -6,22 +6,17 @@ Android app that **locally** tracks IP address changes, performs DNS leak tests,
 
 <div align="center">
 
-<img src="https://github.com/user-attachments/assets/0dd183a1-a193-4d93-a66d-c28b6cbcaf4f" width="200" alt="Home screen" />
+<img src="https://raw.githubusercontent.com/chmikiro/tunneld/refs/heads/features/about-and-lookups/docs/screenshots/1.png" width="200" alt="Home screen & VT lookup" />
 &nbsp;
-<img src="https://github.com/user-attachments/assets/3a0b2b96-ccd7-4c01-85a4-96c620d913ae"" width="200" alt="Lookup external IP" />
+<img src="https://raw.githubusercontent.com/chmikiro/tunneld/refs/heads/features/about-and-lookups/docs/screenshots/2.png" width="200" alt="Current IP card" />
 
 <br />
 
-<img src="https://github.com/user-attachments/assets/8300de80-efda-41c4-a6da-3a78d3fff6f6" width="200" alt="DNS leak test" />
+<img src="https://github.com/chmikiro/tunneld/blob/features/about-and-lookups/docs/screenshots/3.png?raw=true" width="200" alt="DNS leak test" />
 &nbsp;
-<img src="https://github.com/user-attachments/assets/efec6129-a001-47d2-a989-48aef4c13eed" width="200" alt="Dashboard analytics" />
+<img src="https://github.com/chmikiro/tunneld/blob/features/about-and-lookups/docs/screenshots/4.png?raw=true" width="200" alt="Dashboard analytics" />
 
 <br />
-
-<img src="https://github.com/user-attachments/assets/9ec56919-d20c-495d-a913-7762fdd6c7e0" width="200" alt="Settings overview" />
-&nbsp;
-<img src="https://github.com/user-attachments/assets/474689c7-5032-4a77-9a97-a9d85070089e" width="200" alt="Focus service & data source" />
-
 </div>
 
 
@@ -38,6 +33,21 @@ Android app that **locally** tracks IP address changes, performs DNS leak tests,
 | **In-App domain name/link scanning** | Scans links and, specifically, domain names reputation against antivirus providers. | Current *(via VT, more providers to come)* |
 | **In-App IP Scanning** | Scans IPs against antivirus providers, with autodetect option for current IP. | Current  *(via VT, more providers to come)* |
 | **Home Screen Widget (Beta)** | Optional widget showing current IP, country, city, ISP, and organization; updates automatically on IP change. | Current (Beta) |
+
+
+<div align="center">
+
+<img src="https://github.com/chmikiro/tunneld/blob/features/about-and-lookups/docs/screenshots/5.png?raw=true" width="200" alt="Home screen & filters" />
+&nbsp;
+<img src="https://github.com/chmikiro/tunneld/blob/features/about-and-lookups/docs/screenshots/6.png?raw=true" width="200" alt="Settings overview" />
+
+<br />
+
+<img src="https://github.com/chmikiro/tunneld/blob/features/about-and-lookups/docs/screenshots/7.png?raw=true" width="200" alt="Focus service & data source" />
+&nbsp;
+<img src="https://github.com/chmikiro/tunneld/blob/features/about-and-lookups/docs/screenshots/8.png?raw=true" width="200" alt="Focus VT API" />
+
+</div>
 
 
 ### History & Data Management
