@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.map
 
 internal class DataStoreGeoIpPreferences(
     private val dataStore: DataStore<Preferences>,
-) : GeoIpPreferences {
+) : GeoIpPreferences, VtApiKeyPreferences {
     override suspend fun getSelectedProvider(): String {
         val prefs = dataStore.data.first()
         return prefs[Keys.selectedProvider] ?: GeoIpPreferences.DEFAULT_PROVIDER
@@ -45,8 +45,26 @@ internal class DataStoreGeoIpPreferences(
         }
     }
 
+    override suspend fun getVtApiKey(): String? {
+        val prefs = dataStore.data.first()
+        return prefs[Keys.vtApiKey]
+    }
+
+    override fun observeVtApiKey(): Flow<String?> =
+        dataStore.data.map { prefs -> prefs[Keys.vtApiKey] }
+
+    override suspend fun setVtApiKey(key: String?) {
+        dataStore.updateData { prefs ->
+            prefs.toMutablePreferences().apply {
+                if (key != null) this[Keys.vtApiKey] = key
+                else remove(Keys.vtApiKey)
+            }
+        }
+    }
+
     private object Keys {
         val selectedProvider = stringPreferencesKey("geoip_selected_provider")
+        val vtApiKey = stringPreferencesKey("vt_api_key")
         fun apiKeyForProvider(providerId: String) =
             stringPreferencesKey("geoip_api_key_$providerId")
     }

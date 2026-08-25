@@ -21,4 +21,7 @@ interface GeoIpProvider {
 
     /** Perform the lookup. apiKey may be null for free providers. */
     suspend fun lookup(ip: String, apiKey: String?): IpInfo?
+
+    /** URL to view this IP on the provider's website. */
+    fun websiteUrl(ip: String): String
 }

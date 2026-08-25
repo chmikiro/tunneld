@@ -4,6 +4,8 @@ import com.tunneld.ipdiali.shared.core.application.event.EventBus
 import com.tunneld.ipdiali.shared.core.application.event.SharedFlowEventBus
 import com.tunneld.ipdiali.shared.core.application.eventhandler.IpAddressChangeHandler
 import com.tunneld.ipdiali.shared.core.application.usecase.LookupExternalIpUseCase
+import com.tunneld.ipdiali.shared.core.application.usecase.GetProviderWebsiteUrlUseCase
+import com.tunneld.ipdiali.shared.core.application.usecase.GetProviderWebsiteUrlUseCaseImpl
 import com.tunneld.ipdiali.shared.core.application.usecase.LookupExternalIpUseCaseImpl
 import com.tunneld.ipdiali.shared.core.application.usecase.ObserveAddressHistoryUseCase
 import com.tunneld.ipdiali.shared.core.application.usecase.ObserveAddressHistoryUseCaseImpl
@@ -64,6 +66,8 @@ fun sharedCoreApplicationModule(applicationCoroutineScope: CoroutineScope) = mod
     factoryOf(::ClearHistoryUseCaseImpl).bind<ClearHistoryUseCase>()
 
     factoryOf(::LookupExternalIpUseCaseImpl).bind<LookupExternalIpUseCase>()
+
+    factoryOf(::GetProviderWebsiteUrlUseCaseImpl).bind<GetProviderWebsiteUrlUseCase>()
 
     factoryOf(::ImportCsvUseCaseImpl).bind<ImportCsvUseCase>()
 

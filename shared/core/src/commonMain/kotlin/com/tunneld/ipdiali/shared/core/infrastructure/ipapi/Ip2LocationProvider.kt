@@ -13,6 +13,8 @@ internal class Ip2LocationProvider(
     override val requiresApiKey = true
     override val signupUrl = "https://www.ip2location.io/sign-up"
 
+    override fun websiteUrl(ip: String) = "https://www.ip2location.com/demo/$ip"
+
     override suspend fun lookup(ip: String, apiKey: String?): IpInfo? {
         val key = apiKey ?: return null
         return try {

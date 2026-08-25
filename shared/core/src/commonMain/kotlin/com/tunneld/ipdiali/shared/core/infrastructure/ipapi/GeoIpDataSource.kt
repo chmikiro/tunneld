@@ -28,6 +28,12 @@ internal class GeoIpDataSource(
         return tryLookup(provider, ip)
     }
 
+    /** Resolve the selected provider's website URL for a given IP. */
+    suspend fun websiteUrl(ip: String): String? {
+        val selectedId = preferences.getSelectedProvider()
+        return providerMap[selectedId]?.websiteUrl(ip)
+    }
+
     private suspend fun tryLookup(provider: GeoIpProvider, ip: String): IpInfo? {
         val apiKey = if (provider.requiresApiKey) preferences.getApiKey(provider.id) else null
         if (provider.requiresApiKey && apiKey.isNullOrBlank()) {

@@ -6,22 +6,17 @@ Android app that **locally** tracks IP address changes, performs DNS leak tests,
 
 <div align="center">
 
-<img src="https://github.com/user-attachments/assets/0dd183a1-a193-4d93-a66d-c28b6cbcaf4f" width="200" alt="Home screen" />
+<img src="https://raw.githubusercontent.com/chmikiro/tunneld/refs/heads/features/about-and-lookups/docs/screenshots/1.png" width="200" alt="Home screen & VT lookup" />
 &nbsp;
-<img src="https://github.com/user-attachments/assets/3a0b2b96-ccd7-4c01-85a4-96c620d913ae"" width="200" alt="Lookup external IP" />
+<img src="https://raw.githubusercontent.com/chmikiro/tunneld/refs/heads/features/about-and-lookups/docs/screenshots/2.png" width="200" alt="Current IP card" />
 
 <br />
 
-<img src="https://github.com/user-attachments/assets/8300de80-efda-41c4-a6da-3a78d3fff6f6" width="200" alt="DNS leak test" />
+<img src="https://github.com/chmikiro/tunneld/blob/features/about-and-lookups/docs/screenshots/3.png?raw=true" width="200" alt="DNS leak test" />
 &nbsp;
-<img src="https://github.com/user-attachments/assets/efec6129-a001-47d2-a989-48aef4c13eed" width="200" alt="Dashboard analytics" />
+<img src="https://github.com/chmikiro/tunneld/blob/features/about-and-lookups/docs/screenshots/4.png?raw=true" width="200" alt="Dashboard analytics" />
 
 <br />
-
-<img src="https://github.com/user-attachments/assets/9ec56919-d20c-495d-a913-7762fdd6c7e0" width="200" alt="Settings overview" />
-&nbsp;
-<img src="https://github.com/user-attachments/assets/474689c7-5032-4a77-9a97-a9d85070089e" width="200" alt="Focus service & data source" />
-
 </div>
 
 
@@ -31,12 +26,29 @@ Android app that **locally** tracks IP address changes, performs DNS leak tests,
 
 | Feature | Description | Status |
 | :--- | :--- | :--- |
-| **IP & Geolocation Display** | Shows current IPv4 and IPv6 address with geolocation data (country, city, ISP, ASN org). Users can pick one of 3 providers in settings [*(related privacy policy)*](https://github.com/chmikiro/tunneld/blob/895bf85802c570b9d27c6ad635ceafbe4495db2f/docs/privacy-policy.md). | Current |
+| **IP & Geolocation Display** | Shows current IPv4 and IPv6 address with geolocation data (country, city, ISP, ASN org). Users can pick one of 3 providers in settings [*(related privacy policy)*](https://chmikiro.github.io/tunneld/privacy-policy.html). | Current |
 | **Lookup External IP** | Look up any IP address (e.g. 8.8.8.8) from the home screen to see its country, ISP, and provider details. | Current |
 | **Background Monitoring** | Periodic refresh (30 min, off by default) that sends notifications upon IP change. | Current |
 | **Real-time Tracking** | Off by default (Settings > Behavior). A foreground service detects IP changes instantly and shows a persistent notification, independent of periodic checks. | Current |
+| **In-App domain name/link scanning** | Scans links and, specifically, domain names reputation against antivirus providers. | Current *(via VT, more providers to come)* |
+| **In-App IP Scanning** | Scans IPs against antivirus providers, with autodetect option for current IP. | Current  *(via VT, more providers to come)* |
 | **Home Screen Widget (Beta)** | Optional widget showing current IP, country, city, ISP, and organization; updates automatically on IP change. | Current (Beta) |
-| **Lightweight Architecture** | Designed to remain lightweight on both the client and server side. | Current |
+
+
+<div align="center">
+
+<img src="https://github.com/chmikiro/tunneld/blob/features/about-and-lookups/docs/screenshots/5.png?raw=true" width="200" alt="Home screen & filters" />
+&nbsp;
+<img src="https://github.com/chmikiro/tunneld/blob/features/about-and-lookups/docs/screenshots/6.png?raw=true" width="200" alt="Settings overview" />
+
+<br />
+
+<img src="https://github.com/chmikiro/tunneld/blob/features/about-and-lookups/docs/screenshots/7.png?raw=true" width="200" alt="Focus service & data source" />
+&nbsp;
+<img src="https://github.com/chmikiro/tunneld/blob/features/about-and-lookups/docs/screenshots/8.png?raw=true" width="200" alt="Focus VT API" />
+
+</div>
+
 
 ### History & Data Management
 
@@ -45,10 +57,10 @@ Android app that **locally** tracks IP address changes, performs DNS leak tests,
 | **Searchable History** | Keeps a fully searchable history of past IP addresses. Country filter also matches IP addresses (e.g. 192.168 or Morocco). | Current |
 | **Advanced Filtering** | Filters history by IP version (v4/v6), network type (Wi-Fi/Cellular/VPN), and country/IP (partial, case-insensitive). | Current |
 | **Semi-static Analytics Dashboard** | New top-bar screen to access charted IP history (Aka Data Viz): network-type chart, country counts, and time-range filters (Today / 7 days / 30 days / All time), 100% local processing. | Current |
-| **Dynamic Analytics Dashboard** | Fully flexible charts with more data viz variants dynamically updating each component (a la power pivot): full dataset, custom time range, inherit main screen filters, etc. | Future release |
+| **Dynamic Analytics Dashboard** | Fully flexible charts with more data viz variants dynamically updating each component (a la power pivot): full dataset, custom time range, inherit main screen filters, etc. | Next release |
 | **CSV Export** | Exports filtered history to CSV (includes address, version, network_type, country, country_code, city, isp, org, timezone, latitude, longitude, timestamp). | Current |
 | **Import & Restore** | Import and restore previously exported history files. | Current |
-| **Options for IP identification provider** | Pick from a list the provider identifying IP address (currently only [ipify.org](https://github.com/chmikiro/tunneld/blob/895bf85802c570b9d27c6ad635ceafbe4495db2f/docs/privacy-policy.md)). | Next release |
+| **Options for IP identification provider** | Pick from a list the provider identifying IP address (currently only [ipify.org](https://chmikiro.github.io/tunneld/privacy-policy.html)). | Next release |
 
 ### Security & Leak Tests
 
@@ -63,7 +75,7 @@ Android app that **locally** tracks IP address changes, performs DNS leak tests,
 | :--- | :--- | :--- |
 | **Native IP Logging** | Option to use our servers for IP Logging, including GeoIP and IP identification. | Future Release |
 | **Device Identity Leak Detection** | Detects device-level identity leaks. | Future Release |
-| **In-App APK/Link Scanning** | Scans APKs and links against antivirus providers. | Future Release *(next release for links and IPs)* |
+| **In-App APK Scanning** | Scans APKs against antivirus providers. | Future Release |
 | **AI-Powered Personalized Reports** | Optional AI-generated reports *(optional, with your API keys)*. | Future Release |
 
 ## Why Tunnel'd
@@ -83,7 +95,7 @@ Android app that **locally** tracks IP address changes, performs DNS leak tests,
 
 
 ## VT Scan Report
-- No false positives on [Virus Total](https://www.virustotal.com/gui/file-analysis/YTkwZGUwNGFiYzhiMGM2MzBkZmI2OWY5MjM1MmQ1ZDM6MTc4Njc5NzQ0MQ==/detection)
+- No false positives on [Virus Total](https://www.virustotal.com/gui/file/520367893356f9251b537987fab7f36f59025d907e7b2359c8c52203d9ad7625/detection)
 
 
 ## Get it
@@ -98,8 +110,6 @@ Android app that **locally** tracks IP address changes, performs DNS leak tests,
 ```
 
 Requires JDK 21 and Android SDK 35+.
-
-Signing: drop your keystore at the project root as `findmyip-release.keystore` (alias/key/password: `findmyip`) or update `opensource/composeApp/build.gradle.kts`.
 
 
 ## Acknowledgment
@@ -116,4 +126,4 @@ GPLv3 — see [LICENSE](LICENSE).
 ## Security & Privacy
 
 - **[Privacy Policy](https://chmikiro.github.io/tunneld/privacy-policy.html)**
-- **[Trust Boundaries](https://github.com/chmikiro/tunneld?tab=security-ov-file)**
+- **[Trust Boundaries](https://chmikiro.github.io/tunneld/trust-boundaries.html)**

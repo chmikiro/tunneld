@@ -2,6 +2,7 @@ package com.tunneld.ipdiali.shared.feature.settings.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.add
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,9 +10,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.Engineering
@@ -19,6 +23,7 @@ import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.FileUpload
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.TravelExplore
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -36,6 +41,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,12 +49,20 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import androidx.compose.material.icons.outlined.Code
+import androidx.compose.material.icons.outlined.Gavel
+import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.outlined.PrivacyTip
+import androidx.compose.material.icons.outlined.Shield
 import com.tunneld.ipdiali.shared.core.feature.ui.ArrowBackIconButton
 import com.tunneld.ipdiali.shared.core.feature.ui.ThemeState
+import com.tunneld.ipdiali.shared.core.infrastructure.ipapi.VtApiKeyPreferences
 import com.tunneld.ipdiali.shared.core.domain.ThemeMode
 import com.tunneld.ipdiali.shared.core.application.usecase.ClearHistoryUseCase
 import kotlinx.coroutines.launch
@@ -71,8 +85,10 @@ internal fun SettingsScreen(
     var showDataSourceDialog by remember { mutableStateOf(false) }
     var showClearDialog by remember { mutableStateOf(false) }
     var showThemeDialog by remember { mutableStateOf(false) }
+    var showVtKeyDialog by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val clearHistoryUseCase: ClearHistoryUseCase = koinInject()
+    val uriHandler = LocalUriHandler.current
 
     Scaffold(
         modifier = modifier,
@@ -139,6 +155,14 @@ internal fun SettingsScreen(
                     supportingContent = { Text("Import previously exported history") },
                 )
             }
+            item {
+                ListItem(
+                    headlineContent = { Text("VirusTotal API Key") },
+                    modifier = Modifier.heightIn(min = 68.dp).clickable { showVtKeyDialog = true },
+                    leadingContent = { Icon(Icons.Outlined.BugReport, null) },
+                    supportingContent = { Text("Used for IP and domain reputation lookups") },
+                )
+            }
 
             // === Appearance ===
             item { SettingsSectionHeader("Appearance") }
@@ -176,6 +200,34 @@ internal fun SettingsScreen(
                     },
                     supportingContent = { Text("Delete all stored IP addresses") },
                 )
+            }
+
+            // === About ===
+            item { SettingsSectionHeader("About") }
+            item {
+                ListItem(
+                    headlineContent = { Text("Tunnel'd") },
+                    supportingContent = { Text("v0.4.0") },
+                )
+            }
+            item {
+                ListItem(
+                    headlineContent = { Text("License") },
+                    supportingContent = { Text("GPL-3.0") },
+                    leadingContent = { Icon(Icons.Outlined.Gavel, null) },
+                )
+            }
+            item {
+                Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        LinkCell("ipdia.li", Icons.Outlined.Language, { uriHandler.openUri("https://ipdia.li") }, Modifier.weight(1f))
+                        LinkCell("GitHub", Icons.Outlined.Code, { uriHandler.openUri("https://github.com/chmikiro/tunneld") }, Modifier.weight(1f))
+                    }
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        LinkCell("Privacy Policy", Icons.Outlined.PrivacyTip, { uriHandler.openUri("https://chmikiro.github.io/tunneld/privacy-policy.html") }, Modifier.weight(1f))
+                        LinkCell("Security & Trust", Icons.Outlined.Shield, { uriHandler.openUri("https://chmikiro.github.io/tunneld/trust-boundaries.html") }, Modifier.weight(1f))
+                    }
+                }
             }
         }
     }
@@ -259,6 +311,12 @@ internal fun SettingsScreen(
             },
         )
     }
+
+    if (showVtKeyDialog) {
+        VtApiKeyDialog(
+            onDismiss = { showVtKeyDialog = false },
+        )
+    }
 }
 
 @Composable
@@ -270,6 +328,71 @@ private fun SettingsSectionHeader(title: String) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 12.dp),
+    )
+}
+
+@Composable
+private fun LinkCell(
+    label: String,
+    icon: ImageVector,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
+            .clickable(onClick = onClick)
+            .padding(horizontal = 12.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(icon, null, modifier = Modifier.size(20.dp), tint = MaterialTheme.colorScheme.primary)
+        Spacer(Modifier.width(8.dp))
+        Text(label, style = MaterialTheme.typography.bodyMedium)
+    }
+}
+
+@Composable
+private fun VtApiKeyDialog(onDismiss: () -> Unit) {
+    val preferences: VtApiKeyPreferences = koinInject()
+    var key by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(Unit) {
+        key = preferences.getVtApiKey() ?: ""
+    }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("VirusTotal API Key") },
+        text = {
+            Column {
+                Text(
+                    "Enter your VirusTotal API key. You can get one at virustotal.com.",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Spacer(Modifier.height(12.dp))
+                OutlinedTextField(
+                    value = key,
+                    onValueChange = { key = it },
+                    label = { Text("API Key") },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = {
+                scope.launch {
+                    preferences.setVtApiKey(key.ifBlank { null })
+                }
+                onDismiss()
+            }) {
+                Text("Save")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        },
     )
 }
 

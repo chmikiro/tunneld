@@ -32,16 +32,25 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.BugReport
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material.icons.outlined.OpenInNew
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -57,7 +66,11 @@ import androidx.compose.ui.window.DialogProperties
 import com.tunneld.ipdiali.shared.core.feature.ui.FindMyIpTheme
 import com.tunneld.ipdiali.shared.core.feature.ui.LocalClipboardManager
 import com.tunneld.ipdiali.shared.core.feature.ui.LocalDateFormatter
+import com.tunneld.ipdiali.shared.core.application.usecase.GetProviderWebsiteUrlUseCase
+import com.tunneld.ipdiali.shared.core.infrastructure.ipapi.ExternalLinkPreferences
 import com.tunneld.ipdiali.shared.core.domain.IpInfo
+import kotlinx.coroutines.launch
+import org.koin.compose.koinInject
 import com.tunneld.ipdiali.shared.feature.home.persentation.AddressUiModel
 import com.tunneld.ipdiali.shared.feature.home.persentation.InternetProtocolVersion
 import com.tunneld.ipdiali.shared.feature.home.persentation.NetworkType
@@ -77,6 +90,7 @@ internal fun AddressButton(
     showFullEnrichment: Boolean = false,
     showNetworkType: Boolean = true,
     compact: Boolean = false,
+    onVtScan: (() -> Unit)? = null,
 ) {
     val dateFormatter = LocalDateFormatter.current
 
@@ -181,6 +195,20 @@ internal fun AddressButton(
                                 overflow = TextOverflow.Ellipsis,
                                 modifier = Modifier.weight(1f, fill = false),
                             )
+                        }
+                        if (onVtScan != null) {
+                            Spacer(Modifier.width(6.dp))
+                            IconButton(
+                                onClick = onVtScan,
+                                modifier = Modifier.size(20.dp),
+                            ) {
+                                Icon(
+                                    Icons.Outlined.BugReport,
+                                    contentDescription = "Scan with VirusTotal",
+                                    tint = contentColor.copy(alpha = 0.5f),
+                                    modifier = Modifier.size(16.dp),
+                                )
+                            }
                         }
                     }
                 } else {
@@ -306,6 +334,26 @@ internal fun IpDetailDialog(
     val dateFormatter = LocalDateFormatter.current
     var showFieldSelector by remember { mutableStateOf(false) }
     val selectedFields = remember { mutableStateMapOf<String, Boolean>() }
+    val uriHandler = LocalUriHandler.current
+    val getWebsiteUrl: GetProviderWebsiteUrlUseCase = koinInject()
+    val extPrefs: ExternalLinkPreferences = koinInject()
+    val scope = rememberCoroutineScope()
+    var skipProvider by remember { mutableStateOf(false) }
+    var pendingUrl by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(Unit) {
+        skipProvider = extPrefs.getSkipProviderConfirmation()
+    }
+
+    fun openProviderWebsite() {
+        scope.launch {
+            val url = getWebsiteUrl.get(model.address)
+            if (url != null) {
+                if (skipProvider) uriHandler.openUri(url)
+                else pendingUrl = url
+            }
+        }
+    }
     val networkTypeStr = model.networkType.stringResource()
     val ipLabel =
         when (model.internetProtocolVersion) {
@@ -420,6 +468,20 @@ internal fun IpDetailDialog(
 
                 Spacer(Modifier.height(8.dp))
 
+                // Open provider website
+                OutlinedButton(
+                    onClick = { openProviderWebsite() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                ) {
+                    Icon(Icons.Outlined.OpenInNew, null)
+                    Spacer(Modifier.width(6.dp))
+                    Text("Open provider website")
+                }
+
+                Spacer(Modifier.height(4.dp))
+
                 // Actions
                 Row(
                     modifier = Modifier
@@ -449,6 +511,23 @@ internal fun IpDetailDialog(
             fields = fields,
             selectedFields = selectedFields,
             onDismiss = { showFieldSelector = false },
+        )
+    }
+
+    pendingUrl?.let { url ->
+        ExternalLinkConfirmationDialog(
+            title = "Open in external browser?",
+            message = url,
+            skipChecked = skipProvider,
+            onSkipCheckedChange = { skipProvider = it },
+            onConfirm = {
+                scope.launch {
+                    extPrefs.setSkipProviderConfirmation(skipProvider)
+                }
+                uriHandler.openUri(url)
+                pendingUrl = null
+            },
+            onDismiss = { pendingUrl = null },
         )
     }
 }
