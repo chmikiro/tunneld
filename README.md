@@ -6,15 +6,15 @@ Android app that **locally** tracks IP address changes, performs DNS leak tests,
 
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/chmikiro/tunneld/refs/heads/features/about-and-lookups/docs/screenshots/1.png" width="200" alt="Home screen & VT lookup" />
+<img src="https://raw.githubusercontent.com/chmikiro/tunneld/refs/heads/main/docs/screenshots/1.png" width="200" alt="Home screen & VT lookup" />
 &nbsp;
-<img src="https://raw.githubusercontent.com/chmikiro/tunneld/refs/heads/features/about-and-lookups/docs/screenshots/2.png" width="200" alt="Current IP card" />
+<img src="https://raw.githubusercontent.com/chmikiro/tunneld/refs/heads/main/docs/screenshots/2.png" width="200" alt="Current IP card" />
 
 <br />
 
-<img src="https://github.com/chmikiro/tunneld/blob/features/about-and-lookups/docs/screenshots/3.png?raw=true" width="200" alt="DNS leak test" />
+<img src="https://raw.githubusercontent.com/chmikiro/tunneld/refs/heads/main/docs/screenshots/3.png" width="200" alt="DNS leak test" />
 &nbsp;
-<img src="https://github.com/chmikiro/tunneld/blob/features/about-and-lookups/docs/screenshots/4.png?raw=true" width="200" alt="Dashboard analytics" />
+<img src="https://raw.githubusercontent.com/chmikiro/tunneld/refs/heads/main/docs/screenshots/4.png" width="200" alt="Dashboard analytics" />
 
 <br />
 </div>
@@ -37,15 +37,15 @@ Android app that **locally** tracks IP address changes, performs DNS leak tests,
 
 <div align="center">
 
-<img src="https://github.com/chmikiro/tunneld/blob/features/about-and-lookups/docs/screenshots/5.png?raw=true" width="200" alt="Home screen & filters" />
+<img src="https://raw.githubusercontent.com/chmikiro/tunneld/refs/heads/main/docs/screenshots/5.png" width="200" alt="Home screen & filters" />
 &nbsp;
-<img src="https://github.com/chmikiro/tunneld/blob/features/about-and-lookups/docs/screenshots/6.png?raw=true" width="200" alt="Settings overview" />
+<img src="https://raw.githubusercontent.com/chmikiro/tunneld/refs/heads/main/docs/screenshots/6.png" width="200" alt="Settings overview" />
 
 <br />
 
-<img src="https://github.com/chmikiro/tunneld/blob/features/about-and-lookups/docs/screenshots/7.png?raw=true" width="200" alt="Focus service & data source" />
+<img src="https://raw.githubusercontent.com/chmikiro/tunneld/refs/heads/main/docs/screenshots/7.png" width="200" alt="Focus service & data source" />
 &nbsp;
-<img src="https://github.com/chmikiro/tunneld/blob/features/about-and-lookups/docs/screenshots/8.png?raw=true" width="200" alt="Focus VT API" />
+<img src="https://raw.githubusercontent.com/chmikiro/tunneld/refs/heads/main/docs/screenshots/8.png" width="200" alt="Focus VT API" />
 
 </div>
 
