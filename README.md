@@ -94,8 +94,9 @@ Android app that **locally** tracks IP address changes, performs DNS leak tests,
 - Targets Android (iOS target present but not the focus)
 
 
-## VT Scan Report
-- No false positives on [Virus Total](https://www.virustotal.com/gui/file/520367893356f9251b537987fab7f36f59025d907e7b2359c8c52203d9ad7625/detection)
+## VT & HA Scan Report
+-  [Virus Total](https://www.virustotal.com/gui/file/520367893356f9251b537987fab7f36f59025d907e7b2359c8c52203d9ad7625/detection)
+- [Hybid Analysis](https://hybrid-analysis.com/sample/520367893356f9251b537987fab7f36f59025d907e7b2359c8c52203d9ad7625/6ab690b2d55d10ac9f007aa6) *Please note that Hybrid Analysis team performed a manual review of the automatic scan to fix the false positive (verifiable in history)*
 
 
 ## Get it
